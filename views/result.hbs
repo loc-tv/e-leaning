@@ -1,0 +1,13 @@
+<h2>DFT Processing Result</h2>
+{{#if error}}
+  <p class="error">{{error}}</p>
+{{else}}
+  <p><strong>Input Signal:</strong> {{input}}</p>
+  <h3>DFT Result:</h3>
+  <ul>
+    {{#each result}}
+      <li>X[{{@index}}] = {{this.real}} + {{this.imag}}i</li>
+    {{/each}}
+  </ul>
+{{/if}}
+<a href="/form">Try another signal</a>

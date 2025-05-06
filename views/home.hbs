@@ -1,0 +1,18 @@
+<h2>Welcome to Digital Communication Learning</h2>
+<p>Explore digital communication techniques, simulate modulation, and test your knowledge.</p>
+<div class="links">
+  <a href="/docs">Learning Materials</a>
+  <a href="/simulation">Signal Simulation</a>
+  <a href="/quiz">Take a Quiz</a>
+  <a href="/form">Process Signal</a>
+</div>
+<h3>Recent Signals</h3>
+{{#if signals}}
+  <ul>
+    {{#each signals}}
+      <li>Input: {{this.input_signal}} | Result: {{this.result}}</li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No signals processed yet.</p>
+{{/if}}
