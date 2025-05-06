@@ -3,7 +3,6 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 const dotenv = require('dotenv');
 const db = require('./config/db');
-const indexRouter = require('./routes/index');
 const winston = require('winston');
 
 // Load environment variables
@@ -45,7 +44,13 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/', indexRouter);
+app.get('/', (req, res) => {
+  res.render('home');
+});
+
+app.get('/simulation', (req, res) => {
+  res.render('simulation');
+});
 
 // Error handling
 app.use((err, req, res, next) => {

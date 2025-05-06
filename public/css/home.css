@@ -1,0 +1,212 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #FFFFFF;
+    color: #222831;
+  }
+  
+  .dashboard {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    width: 230px;
+    background-color: #E8F9FF;
+    color: #222831;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    gap: 10px;
+  }
+
+  .logo-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+  }
+  .nav-item {
+    color: white;
+    text-decoration: none;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-item.active {
+    color: #3498db;
+  }
+  
+  .nav-item .icon {
+    font-size: 20px;
+  }
+  
+  .user-profile img {
+    border-radius: 50%;
+    margin-top: 20px;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .header-left h1 {
+    font-size: 24px;
+    margin: 0;
+  }
+  
+  .back-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  .header-right span {
+    margin: 0 10px;
+    color: #7f8c8d;
+  }
+  
+  .team-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .team-avatars img {
+    border-radius: 50%;
+    margin-left: -10px;
+    border: 2px solid #fff;
+  }
+  
+  .team-info span {
+    margin-right: 10px;
+    color: #7f8c8d;
+  }
+  
+  .widgets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .widget {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .visits, .finance {
+    background: #3498db;
+    color: white;
+  }
+  
+  .visits .value, .finance .value {
+    font-size: 36px;
+    margin: 10px 0;
+  }
+  
+  .visits .stats, .finance .months {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+  
+  .visits .view-stats, .popularity .learn-more {
+    background: none;
+    border: 1px solid;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .visits .widget-illustration {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    opacity: 0.5;
+  }
+  
+  .popularity {
+    background: #f39c12;
+    color: white;
+  }
+  
+  .popularity .value {
+    font-size: 36px;
+    margin: 10px 0;
+  }
+  
+  .popularity p {
+    font-size: 12px;
+    margin: 10px 0;
+  }
+  
+  .finance .chart {
+    display: flex;
+    justify-content: space-between;
+    height: 100px;
+  }
+  
+  .finance .bar {
+    width: 20px;
+    background: white;
+    border-radius: 5px;
+  }
+  
+  .top-performers .performer {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+  }
+  
+  .top-performers img {
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .top-performers span:nth-child(2) {
+    flex-grow: 1;
+  }
+  
+  .targeting .map {
+    position: relative;
+  }
+  
+  .targeting .map-image {
+    width: 100%;
+  }
+  
+  .targeting .region {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+

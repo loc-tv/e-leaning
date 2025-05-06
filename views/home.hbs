@@ -1,18 +1,95 @@
-<h2>Welcome to Digital Communication Learning</h2>
-<p>Explore digital communication techniques, simulate modulation, and test your knowledge.</p>
-<div class="links">
-  <a href="/docs">Learning Materials</a>
-  <a href="/simulation">Signal Simulation</a>
-  <a href="/quiz">Take a Quiz</a>
-  <a href="/form">Process Signal</a>
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="logo">
+      <img src="/images/e_learning.png" alt="Logo" class="logo-img">
+      <span>E-Leaning</span>
+    </div>
+      
+    <nav>
+      <a href="/" class="nav-item active"><span class="icon">📊</span> Overview</a>
+      <a href="/simulation" class="nav-item"><span class="icon">📋</span> Simulation</a>
+      <a href="#" class="nav-item"><span class="icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="user-profile">
+      <img src="https://via.placeholder.com/40" alt="User">
+    </div>
+  </aside>
+  <main class="main-content">
+    <header>
+      <div class="header-left">
+        <button class="back-btn">← Back</button>
+        <h1>DASHBOARD</h1>
+      </div>
+      <div class="header-right">
+        <span>Insights</span> | <span>Channels</span>
+        <div class="team-info">
+          <span>12 members</span>
+          <div class="team-avatars">
+            <img src="https://via.placeholder.com/24" alt="Member 1">
+            <img src="https://via.placeholder.com/24" alt="Member 2">
+            <img src="https://via.placeholder.com/24" alt="Member 3">
+          </div>
+        </div>
+      </header>
+    <section class="widgets">
+      <div class="widget visits">
+        <h3>Visits for today</h3>
+        <div class="value">824</div>
+        <div class="stats">
+          <span>Popularity</span>
+          <span>93</span>
+          <span>General rate</span>
+          <span>4.7</span>
+        </div>
+        <button class="view-stats">VIEW FULL STATISTIC</button>
+        <img src="https://via.placeholder.com/150" alt="Illustration" class="widget-illustration">
+      </div>
+      <div class="widget popularity">
+        <h3>Popularity rate</h3>
+        <div class="value">87°</div>
+        <p>Your rate has increased because of your recent update activity. Keep moving forward and get more points!</p>
+        <button class="learn-more">Learn more how to manage all aspects of your alerts</button>
+      </div>
+      <div class="widget finance">
+        <h3>Finance Performance</h3>
+        <div class="value">$12,841 <span>monthly income</span></div>
+        <div class="chart">
+          <div class="bar" style="height: 80%;"></div>
+          <div class="bar" style="height: 40%;"></div>
+          <div class="bar" style="height: 60%;"></div>
+          <div class="bar" style="height: 70%;"></div>
+          <div class="bar" style="height: 50%;"></div>
+        </div>
+        <div class="months">DEC JAN FEB MAR APR MAY</div>
+      </div>
+      <div class="widget top-performers">
+        <h3>TOP performers</h3>
+        <div class="performer">
+          <img src="https://via.placeholder.com/40" alt="Bessie Cooper">
+          <span>Bessie Cooper</span>
+          <span>Online</span>
+          <span>4.5</span>
+        </div>
+        <div class="performer">
+          <img src="https://via.placeholder.com/40" alt="Alberto Flores">
+          <span>Alberto Flores</span>
+          <span>2 min ago</span>
+          <span>4.7</span>
+        </div>
+        <div class="performer">
+          <img src="https://via.placeholder.com/40" alt="Guy Hawkins">
+          <span>Guy Hawkins</span>
+          <span>2 min ago</span>
+          <span>4.4</span>
+        </div>
+      </div>
+      <div class="widget targeting">
+        <h3>Targeting by region</h3>
+        <div class="map">
+          <img src="https://via.placeholder.com/200" alt="World Map" class="map-image">
+          <div class="region">Poland <span>23.0% 4.7</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
-<h3>Recent Signals</h3>
-{{#if signals}}
-  <ul>
-    {{#each signals}}
-      <li>Input: {{this.input_signal}} | Result: {{this.result}}</li>
-    {{/each}}
-  </ul>
-{{else}}
-  <p>No signals processed yet.</p>
-{{/if}}

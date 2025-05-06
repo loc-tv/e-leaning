@@ -22,13 +22,14 @@ CẤU TRÚC THƯ MỤC:
 
 HƯỚNG DẪN CÀI ĐẶT:
 -------------------
-1. Giải nén file webServer-template.zip
+1. Giải nén file e-learning.zip
 2. Mở terminal tại thư mục dự án
 3. Chạy lệnh:      npm install
    → Cài đặt các package cần thiết
-4. Chạy dự án:     npm start
+4. Run comment sql: mysql -u root -p < database/schema.sql
+5. Chạy dự án:     npm start
    hoặc:           node server.js
-5. Truy cập trình duyệt tại địa chỉ: http://localhost:3000
+6. Truy cập trình duyệt tại địa chỉ: http://localhost:3000
 
 LƯU Ý:
 -------------------
