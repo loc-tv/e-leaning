@@ -1,212 +1,330 @@
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+/*=============== VARIABLES CSS ===============*/
+:root {
+  --header-height: 3.5rem;
+  /*========== Colors ==========*/
+  /*Color mode HSL(hue, saturation, lightness)*/
+  --first-color: hsl(220, 68%, 54%);
+  --first-color-lighten: hsl(220, 68%, 97%);
+  --title-color: hsl(220, 48%, 28%);
+  --text-color: hsl(220, 12%, 45%);
+  --body-color: hsl(220, 100%, 99%);
+  /*========== Font and typography ==========*/
+  /*.5rem = 8px | 1rem = 16px ...*/
+  --body-font: "Poppins", sans-serif;
+  --normal-font-size: .938rem;
+  --small-font-size: .813rem;
+  --smaller-font-size: .75rem;
+  /*========== Font weight ==========*/
+  --font-medium: 500;
+  --font-semi-bold: 600;
+  /*========== z index ==========*/
+  --z-tooltip: 10;
+  --z-fixed: 100;
+}
+@media screen and (min-width: 1024px) {
+  :root {
+    --normal-font-size: 1rem;
+    --small-font-size: .875rem;
+    --smaller-font-size: .813rem;
+  }
+}
+
+/*=============== BASE ===============*/
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
+  font-family: var(--body-font);
+  font-size: var(--normal-font-size);
+  background-color: var(--body-color);
+  color: var(--text-color);
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+/*=============== REUSABLE CSS CLASSES ===============*/
+.container {
+  max-width: 1120px;
+  margin-inline: 1.5rem;
+}
+
+/*=============== HEADER ===============*/
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 2px 8px hsla(220, 68%, 12%, 0.1);
+  background-color: var(--body-color);
+  z-index: var(--z-fixed);
+}
+
+/*=============== NAV ===============*/
+.nav {
+  height: var(--header-height);
+}
+.nav__data {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nav__logo {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 0.25rem;
+  color: var(--title-color);
+  font-weight: var(--font-semi-bold);
+  transition: color 0.3s;
+}
+.nav__logo img {
+  width: 6rem;
+  height: 6rem;
+}
+.nav__logo:hover {
+  color: var(--first-color);
+}
+.nav__toggle {
+  position: relative;
+  width: 32px;
+  height: 32px;
+}
+.nav__toggle-menu, .nav__toggle-close {
+  font-size: 1.25rem;
+  color: var(--title-color);
+  position: absolute;
+  display: grid;
+  place-items: center;
+  inset: 0;
+  cursor: pointer;
+  transition: opacity 0.1s, transform 0.4s;
+}
+.nav__toggle-close {
+  opacity: 0;
+}
+@media screen and (max-width: 1118px) {
+  .nav__menu {
+    background-color: var(--body-color);
+    position: absolute;
+    left: 0;
+    top: 2.5rem;
+    width: 100%;
+    height: calc(100vh - 3.5rem);
+    overflow: auto;
+    padding-block: 1.5rem 4rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: top 0.4s, opacity 0.3s;
+  }
+  .nav__menu::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  .nav__menu::-webkit-scrollbar-thumb {
+    background-color: hsl(220, 12%, 70%);
+  }
+}
+.nav__link {
+  color: var(--title-color);
+  font-weight: var(--font-semi-bold);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+.nav__link:hover {
+  background-color: var(--first-color-lighten);
+}
+
+/* Show menu */
+.show-menu {
+  opacity: 1;
+  top: 3.5rem;
+  pointer-events: initial;
+}
+
+/* Show icon */
+.show-icon .nav__toggle-menu {
+  opacity: 0;
+  transform: rotate(90deg);
+}
+
+.show-icon .nav__toggle-close {
+  opacity: 1;
+  transform: rotate(90deg);
+}
+
+/*=============== DROPDOWN ===============*/
+.dropdown__button {
+  cursor: pointer;
+}
+.dropdown__arrow {
+  font-size: 1.5rem;
+  font-weight: initial;
+  transition: transform 0.4s;
+}
+.dropdown__content, .dropdown__group, .dropdown__list {
+  display: grid;
+}
+.dropdown__container {
+  background-color: var(--first-color-lighten);
+  height: 0;
+  overflow: hidden;
+  transition: height 0.4s;
+}
+.dropdown__content {
+  row-gap: 1.75rem;
+}
+.dropdown__group {
+  padding-left: 2.5rem;
+  row-gap: 0.5rem;
+}
+.dropdown__group:first-child {
+  margin-top: 1.25rem;
+}
+.dropdown__group:last-child {
+  margin-bottom: 1.25rem;
+}
+.dropdown__icon i {
+  font-size: 1.25rem;
+  color: var(--first-color);
+}
+.dropdown__title {
+  font-size: var(--small-font-size);
+  font-weight: var(--font-semi-bold);
+  color: var(--title-color);
+}
+.dropdown__list {
+  row-gap: 0.25rem;
+}
+.dropdown__link {
+  font-size: var(--smaller-font-size);
+  font-weight: var(--font-medium);
+  color: var(--text-color);
+  transition: color 0.3s;
+}
+.dropdown__link:hover {
+  color: var(--title-color);
+}
+
+/* Rotate dropdown icon */
+.show-dropdown .dropdown__arrow {
+  transform: rotate(180deg);
+}
+
+/*=============== BREAKPOINTS ===============*/
+/* For small devices */
+@media screen and (max-width: 300px) {
+  .dropdown__group {
+    padding-left: 1.5rem;
+  }
+}
+/* For large devices */
+@media screen and (min-width: 1118px) {
+  /* Nav */
+  .nav {
+    height: calc(var(--header-height) + 2rem);
+    display: flex;
+    justify-content: space-between;
+  }
+  .nav__toggle {
+    display: none;
+  }
+  .nav__list {
+    display: flex;
+    column-gap: 3rem;
+    height: 100%;
+  }
+  .nav li {
+    display: flex;
+  }
+  .nav__link {
     padding: 0;
-    background-color: #FFFFFF;
-    color: #222831;
   }
-  
-  .dashboard {
-    display: flex;
-    height: 100vh;
+  .nav__link:hover {
+    background-color: initial;
   }
-  
-  .sidebar {
-    width: 230px;
-    background-color: #E8F9FF;
-    color: #222831;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 0;
+  /* Dropdown */
+  .dropdown__button {
+    column-gap: 0.25rem;
+    pointer-events: none;
   }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    font-size: 24px;
-    gap: 10px;
+  .dropdown__container {
+    height: max-content;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 6.5rem;
+    background-color: var(--body-color);
+    box-shadow: 0 6px 8px hsla(220, 68%, 12%, 0.05);
+    pointer-events: none;
+    opacity: 0;
+    transition: top 0.4s, opacity 0.3s;
   }
-
-  .logo-img {
+  .dropdown__content {
+    grid-template-columns: repeat(4, max-content);
+    column-gap: 6rem;
+    max-width: 1120px;
+    margin-inline: auto;
+  }
+  .dropdown__group {
+    padding: 4rem 0;
+    align-content: baseline;
+    row-gap: 1.25rem;
+  }
+  .dropdown__group:first-child, .dropdown__group:last-child {
+    margin: 0;
+  }
+  .dropdown__list {
+    row-gap: 0.75rem;
+  }
+  .dropdown__icon {
     width: 60px;
     height: 60px;
-    object-fit: cover;
-  }
-  .nav-item {
-    color: white;
-    text-decoration: none;
-    margin: 20px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .nav-item.active {
-    color: #3498db;
-  }
-  
-  .nav-item .icon {
-    font-size: 20px;
-  }
-  
-  .user-profile img {
+    background-color: var(--first-color-lighten);
     border-radius: 50%;
-    margin-top: 20px;
-  }
-  
-  .main-content {
-    flex-grow: 1;
-    padding: 20px;
-  }
-  
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .header-left h1 {
-    font-size: 24px;
-    margin: 0;
-  }
-  
-  .back-btn {
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  
-  .header-right {
-    display: flex;
-    align-items: center;
-  }
-  
-  .header-right span {
-    margin: 0 10px;
-    color: #7f8c8d;
-  }
-  
-  .team-info {
-    display: flex;
-    align-items: center;
-  }
-  
-  .team-avatars img {
-    border-radius: 50%;
-    margin-left: -10px;
-    border: 2px solid #fff;
-  }
-  
-  .team-info span {
-    margin-right: 10px;
-    color: #7f8c8d;
-  }
-  
-  .widgets {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    place-items: center;
+    margin-bottom: 1rem;
   }
-  
-  .widget {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  .dropdown__icon i {
+    font-size: 2rem;
   }
-  
-  .visits, .finance {
-    background: #3498db;
-    color: white;
+  .dropdown__title {
+    font-size: var(--normal-font-size);
   }
-  
-  .visits .value, .finance .value {
-    font-size: 36px;
-    margin: 10px 0;
+  .dropdown__link {
+    font-size: var(--small-font-size);
   }
-  
-  .visits .stats, .finance .months {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
+  .dropdown__link:hover {
+    color: var(--first-color);
   }
-  
-  .visits .view-stats, .popularity .learn-more {
-    background: none;
-    border: 1px solid;
-    padding: 5px 10px;
+  .dropdown__item {
     cursor: pointer;
-    border-radius: 5px;
   }
-  
-  .visits .widget-illustration {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    opacity: 0.5;
+  .dropdown__item:hover .dropdown__arrow {
+    transform: rotate(180deg);
   }
-  
-  .popularity {
-    background: #f39c12;
-    color: white;
+  .dropdown__item:hover > .dropdown__container {
+    top: 5.5rem;
+    opacity: 1;
+    pointer-events: initial;
+    cursor: initial;
   }
-  
-  .popularity .value {
-    font-size: 36px;
-    margin: 10px 0;
+}
+@media screen and (min-width: 1152px) {
+  .container {
+    margin-inline: auto;
   }
-  
-  .popularity p {
-    font-size: 12px;
-    margin: 10px 0;
-  }
-  
-  .finance .chart {
-    display: flex;
-    justify-content: space-between;
-    height: 100px;
-  }
-  
-  .finance .bar {
-    width: 20px;
-    background: white;
-    border-radius: 5px;
-  }
-  
-  .top-performers .performer {
-    display: flex;
-    align-items: center;
-    margin: 10px 0;
-  }
-  
-  .top-performers img {
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  
-  .top-performers span:nth-child(2) {
-    flex-grow: 1;
-  }
-  
-  .targeting .map {
-    position: relative;
-  }
-  
-  .targeting .map-image {
-    width: 100%;
-  }
-  
-  .targeting .region {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255,255,255,0.8);
-    padding: 5px 10px;
-    border-radius: 5px;
-  }
-
+}
