@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{title}}</title>
-  <link rel="stylesheet" href="/css/home.css">
-</head>
-<body>
-  {{{body}}}
-</body>
-</html>
+{{> header}}
+<div class="layout">
+  {{> sidebar}}
+  <main class="main-content">
+    {{{body}}}
+  </main>
+</div>
+{{> footer}}

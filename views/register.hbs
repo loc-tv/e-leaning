@@ -1,0 +1,9 @@
+<h2>Đăng ký</h2>
+<form method="POST" action="/register">
+    <input name="username" placeholder="Tên đăng nhập" required>
+    <input name="email" type="email" placeholder="Email" required>
+    <input name="password" type="password" placeholder="Mật khẩu" required>
+    <button type="submit">Đăng ký</button>
+    {{#if error}}<p style="color:red">{{error}}</p>{{/if}}
+</form>
+<p>Đã có tài khoản? <a href="/login">Đăng nhập</a></p>

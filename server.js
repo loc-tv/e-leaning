@@ -2,8 +2,10 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const path = require('path');
 const dotenv = require('dotenv');
-const db = require('./config/db');
+const db = require(path.join(__dirname, 'config', 'db'));
 const winston = require('winston');
+const session = require('express-session');
+const { requireLogin } = require('./middleware/authMiddleware');
 
 // Load environment variables
 dotenv.config();
@@ -26,6 +28,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: false
+}));
+
 // Logger setup
 const logger = winston.createLogger({
   level: 'info',
@@ -44,13 +52,15 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.get('/', (req, res) => {
-  res.render('home');
+app.get('/', requireLogin, (req, res) => {
+  res.render('home', {
+    title: 'Digital Communication Learning Platform',
+    layout: 'main'
+  });
 });
 
-app.get('/simulation', (req, res) => {
-  res.render('simulation');
-});
+const userRoutes = require('./routes/userRoutes');
+app.use('/', userRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {

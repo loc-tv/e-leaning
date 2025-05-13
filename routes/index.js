@@ -6,8 +6,8 @@ router.get('/', UserController.home);
 router.get('/form', UserController.showForm);
 router.post('/process', UserController.processSignal);
 router.get('/docs', UserController.showDocs);
-router.get('/simulation', UserController.showSimulation);
-router.get('/quiz', UserController.showQuiz);
-router.post('/quiz', UserController.submitQuiz);
+router.get('/simulations', UserController.showSimulation);
+router.get('/quizzes', UserController.showQuiz);
+router.post('/quizzes', UserController.submitQuiz);
 
 module.exports = router;

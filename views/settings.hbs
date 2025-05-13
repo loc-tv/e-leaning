@@ -1,0 +1,102 @@
+<div class="settings-container">
+  <h2>Cài đặt tài khoản</h2>
+  {{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+  {{/if}}
+  {{#if success}}
+    <div class="alert alert-success">{{success}}</div>
+  {{/if}}
+
+  <div class="settings-section">
+    <h3>Đổi mật khẩu</h3>
+    <form method="POST" action="/settings/change-password" class="settings-form">
+      <label for="oldPassword">Mật khẩu cũ:</label>
+      <input type="password" id="oldPassword" name="oldPassword" required>
+      <label for="newPassword">Mật khẩu mới:</label>
+      <input type="password" id="newPassword" name="newPassword" required>
+      <button type="submit">Đổi mật khẩu</button>
+    </form>
+  </div>
+
+  <div class="settings-section">
+    <h3>Đổi email</h3>
+    <form method="POST" action="/settings/change-email" class="settings-form">
+      <label for="newEmail">Email mới:</label>
+      <input type="email" id="newEmail" name="newEmail" required>
+      <button type="submit">Đổi email</button>
+    </form>
+  </div>
+
+  <div class="settings-section">
+    <form method="GET" action="/logout">
+      <button type="submit" class="logout-btn">Đăng xuất</button>
+    </form>
+  </div>
+</div>
+
+<style>
+.settings-container {
+  max-width: 500px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  padding: 32px 24px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+.settings-container h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.settings-section {
+  margin-bottom: 32px;
+}
+.settings-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.settings-form input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+.settings-form button, .logout-btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.settings-form button:hover, .logout-btn:hover {
+  background: #0056b3;
+}
+.alert {
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-bottom: 18px;
+  font-size: 1rem;
+}
+.alert-danger {
+  background: #ffe0e0;
+  color: #c00;
+}
+.alert-success {
+  background: #e0ffe0;
+  color: #080;
+}
+.logout-btn {
+  width: 100%;
+  margin-top: 10px;
+  background: #dc3545;
+}
+.logout-btn:hover {
+  background: #a71d2a;
+}
+</style> 
