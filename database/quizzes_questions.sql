@@ -1,5 +1,5 @@
 -- mysql -u root -p dsp_learning < database/quizzes_questions.sql --
-
+USE dsp_learning;
 -- Create quiz_questions table
 CREATE TABLE IF NOT EXISTS quizzes_questions (
     id INT PRIMARY KEY AUTO_INCREMENT,
