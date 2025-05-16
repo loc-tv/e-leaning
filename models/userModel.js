@@ -10,11 +10,16 @@ const UserModel = {
     db.query(query, callback);
   },
   getQuizzesQuestions: async () => {
-    const [questions] = await db.execute(`
-      SELECT * FROM quizzes_questions 
-      ORDER BY RAND() 
-      LIMIT 10
-    `);
+    const [questions] = await db.execute('SELECT * FROM quizzes_questions ORDER BY RAND() LIMIT 10');
+    // Parse options JSON cho từng câu hỏi
+    questions.forEach(q => q.options = JSON.parse(q.options));
+    return questions;
+  },
+  getQuizQuestionsByIds: async (ids) => {
+    if (!ids.length) return [];
+    const placeholders = ids.map(() => '?').join(',');
+    const [questions] = await db.execute(`SELECT * FROM quizzes_questions WHERE id IN (${placeholders})`, ids);
+    questions.forEach(q => q.options = JSON.parse(q.options));
     return questions;
   },
   saveQuizzesResult: async (userId, score, totalQuestions, callback) => {
@@ -39,10 +44,10 @@ const UserModel = {
       callback(err);
     }
   },
-  create: async (username, hashedPassword, email) => {
+  create: async (username, hashedPassword, email, role = 'user') => {
     await db.execute(
-      'INSERT INTO users (username, password, email) VALUES (?, ?, ?)',
-      [username, hashedPassword, email]
+      'INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)',
+      [username, hashedPassword, email, role]
     );
   },
   findByUsername: async (username) => {
@@ -56,6 +61,28 @@ const UserModel = {
     const [rows] = await db.execute('SELECT * FROM users WHERE id = ?', [id]);
     return rows[0];
   },
+  updateRole: async (userId, role) => {
+    await db.execute(
+      'UPDATE users SET role = ? WHERE id = ?',
+      [role, userId]
+    );
+  },
+  getAllUsers: async () => {
+    const [rows] = await db.execute('SELECT id, username, email, role FROM users');
+    return rows;
+  },
+  updatePassword: async (userId, hashedPassword) => {
+    await db.execute(
+      'UPDATE users SET password = ? WHERE id = ?',
+      [hashedPassword, userId]
+    );
+  },
+  updateEmail: async (userId, email) => {
+    await db.execute(
+      'UPDATE users SET email = ? WHERE id = ?',
+      [email, userId]
+    );
+  }
 };
 
 module.exports = UserModel;

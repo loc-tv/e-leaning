@@ -1,0 +1,33 @@
+<div class="container mt-4">
+  <h1>Quản lý người dùng</h1>
+  
+  <div class="table-responsive mt-4">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each users}}
+          <tr>
+            <td>{{this.id}}</td>
+            <td>{{this.username}}</td>
+            <td>{{this.email}}</td>
+            <td>
+              <form action="/admin/users/{{this.id}}/role" method="POST">
+                <select name="role" class="form-select" onchange="this.form.submit()">
+                  <option value="admin" {{#if (eq this.role 'admin')}}selected{{/if}}>Admin</option>
+                  <option value="user" {{#if (eq this.role 'user')}}selected{{/if}}>User</option>
+                </select>
+              </form>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div> 

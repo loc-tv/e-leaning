@@ -1,0 +1,15 @@
+<div class="container mt-4">
+  <h1>Sửa lý thuyết</h1>
+  <form action="/admin/theory/edit/{{theory.id}}" method="POST" class="row g-3">
+    <div class="col-md-8">
+      <input type="text" name="title" class="form-control" value="{{theory.title}}" required>
+    </div>
+    <div class="col-md-12 mt-2">
+      <textarea name="content" class="form-control" rows="5" required>{{theory.content}}</textarea>
+    </div>
+    <div class="col-md-2 mt-2">
+      <button type="submit" class="btn btn-primary w-100">Lưu thay đổi</button>
+    </div>
+  </form>
+  <a href="/admin/theory" class="btn btn-secondary mt-3">Quay lại danh sách</a>
+</div> 

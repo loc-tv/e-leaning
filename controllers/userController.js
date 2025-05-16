@@ -2,6 +2,7 @@ const UserModel = require('../models/userModel.js');
 const bcrypt = require('bcrypt');
 const User = require('../models/userModel.js');
 const pool = require('../config/db');
+const QuizzesQuestionModel = require('../models/quizzesQuestionModel');
 
 const calculateDFT = (signal) => {
   const N = signal.length;
@@ -60,87 +61,78 @@ const UserController = {
   showDocs: (req, res) => {
     res.render('docs', { title: 'Learning Materials' });
   },
-  showSimulation: (req, res) => {
-    res.render('simulations', { 
-      title: 'Signal Modulation Simulation',
-      defaultValues: {
-        carrierFreq: 10,
-        messageFreq: 1,
-        timePoints: 100,
-        modulationType: 'AM'
-      }
-    });
-  },
-  calculateModulation: (req, res) => {
-    const { carrierFreq, messageFreq, timePoints, modulationType } = req.body;
-    const time = Array.from({ length: timePoints }, (_, i) => i / timePoints);
-    
-    let result = [];
-    switch (modulationType) {
-      case 'AM':
-        result = time.map(t => simulateAM(Number(carrierFreq), Number(messageFreq), t));
-        break;
-      case 'FM':
-        result = time.map(t => simulateFM(Number(carrierFreq), Number(messageFreq), t));
-        break;
-      case 'PSK':
-        // For PSK, we'll use a simple binary message
-        const message = time.map(t => Math.sin(2 * Math.PI * Number(messageFreq) * t) > 0 ? 1 : -1);
-        result = time.map((t, i) => simulatePSK(Number(carrierFreq), message[i], t));
-        break;
+  showSimulation: async (req, res) => {
+    try {
+      res.render('simulations', {
+        user: req.user,
+        title: 'Signal Simulation'
+      });
+    } catch (error) {
+      res.status(500).render('error', {
+        message: 'Error loading simulation',
+        error: { status: 500 }
+      });
     }
-
-    res.json({
-      time: time,
-      result: result,
-      carrier: time.map(t => Math.sin(2 * Math.PI * Number(carrierFreq) * t)),
-      message: time.map(t => Math.sin(2 * Math.PI * Number(messageFreq) * t))
-    });
+  },
+  calculateModulation: async (req, res) => {
+    try {
+      const { carrierFreq, messageFreq, timePoints, modulationType } = req.body;
+      const N = Number(timePoints) || 100;
+      const carrierF = Number(carrierFreq) || 10;
+      const messageF = Number(messageFreq) || 1;
+      const time = Array.from({ length: N }, (_, i) => i / N);
+      let result = [];
+      let carrier = time.map(t => Math.sin(2 * Math.PI * carrierF * t));
+      let message = time.map(t => Math.sin(2 * Math.PI * messageF * t));
+      if (modulationType === 'AM') {
+        result = time.map(t => (1 + 0.5 * Math.sin(2 * Math.PI * messageF * t)) * Math.sin(2 * Math.PI * carrierF * t));
+      } else if (modulationType === 'FM') {
+        result = time.map(t => Math.sin(2 * Math.PI * (carrierF * t + 0.5 * Math.sin(2 * Math.PI * messageF * t))));
+      } else if (modulationType === 'PSK') {
+        const messageBits = time.map(t => Math.sin(2 * Math.PI * messageF * t) > 0 ? 1 : -1);
+        result = time.map((t, i) => Math.sin(2 * Math.PI * carrierF * t + (messageBits[i] > 0 ? 0 : Math.PI)));
+      }
+      res.json({ time, carrier, message, result });
+    } catch (error) {
+      console.error('Simulation error:', error);
+      res.status(500).json({ error: 'Simulation error' });
+    }
   },
   showQuiz: async (req, res) => {
     try {
-      const questions = await UserModel.getQuizzesQuestions();
-      res.render('quizzes', { 
-        title: 'Digital Communication Quiz',
-        questions: questions
+      const questions = await QuizzesQuestionModel.getAll();
+      res.render('quizzes', {
+        user: req.user,
+        questions,
+        title: 'Quiz'
       });
-    } catch (err) {
-      res.status(500).send('Error loading quiz questions');
+    } catch (error) {
+      console.error('Error loading quiz:', error);
+      res.status(500).render('error', {
+        message: 'Error loading quiz',
+        error: { status: 500 }
+      });
     }
   },
   submitQuiz: async (req, res) => {
     try {
-      const answers = req.body;
-      const questions = await UserModel.getQuizzesQuestions();
-      
+      const { answers } = req.body;
+      const ids = Object.keys(answers);
+      const questions = await QuizzesQuestionModel.getByIds(ids);
       let score = 0;
-      const feedback = [];
-      
-      questions.forEach(question => {
-        const userAnswer = parseInt(answers[question.id]);
-        const isCorrect = userAnswer === question.correct_answer;
-        
-        if (isCorrect) {
+      questions.forEach(q => {
+        const qid = String(q.id);
+        if (
+          answers[qid] !== undefined &&
+          Number(answers[qid]) === Number(q.correct_answer)
+        ) {
           score++;
         }
-        
-        feedback.push({
-          questionId: question.id,
-          correctAnswer: question.correct_answer,
-          explanation: question.explanation
-        });
       });
-      
-      // Save quiz result
-      await UserModel.saveQuizzesResult(req.session.userId, score, questions.length);
-      
-      res.json({
-        score: score,
-        total: questions.length,
-        feedback: feedback
-      });
-    } catch (err) {
-      res.status(500).send('Error processing quiz submission');
+      res.json({ score, totalQuestions: questions.length });
+    } catch (error) {
+      console.error('Error submitting quiz:', error);
+      res.status(500).json({ error: 'Server error' });
     }
   },
   register: async (req, res) => {
@@ -171,24 +163,69 @@ const UserController = {
       return res.render('login', { error: 'Invalid username or password.' });
     }
     req.session.userId = user.id;
+    req.session.role = user.role;
     res.redirect('/');
   },
-  showSettings: (req, res) => {
-    res.render('settings', { title: 'Cài đặt tài khoản' });
+  showSettings: async (req, res) => {
+    try {
+      res.render('settings', {
+        user: req.user,
+        title: 'Settings'
+      });
+    } catch (error) {
+      res.status(500).render('error', {
+        message: 'Error loading settings',
+        error: { status: 500 }
+      });
+    }
   },
   changePassword: async (req, res) => {
-    const { oldPassword, newPassword } = req.body;
-    const user = await User.findById(req.session.userId);
-    const match = await bcrypt.compare(oldPassword, user.password);
-    if (!match) return res.render('settings', { error: 'Mật khẩu cũ không đúng' });
-    const hashed = await bcrypt.hash(newPassword, 10);
-    await pool.query('UPDATE users SET password = ? WHERE id = ?', [hashed, user.id]);
-    res.render('settings', { success: 'Đổi mật khẩu thành công' });
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const user = await UserModel.findById(req.user.id);
+
+      // Kiểm tra mật khẩu hiện tại
+      const validPassword = await bcrypt.compare(currentPassword, user.password);
+      if (!validPassword) {
+        return res.render('settings', {
+          user: req.user,
+          error: 'Current password is incorrect',
+          title: 'Settings'
+        });
+      }
+
+      // Mã hóa mật khẩu mới
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await UserModel.updatePassword(req.user.id, hashedPassword);
+
+      res.render('settings', {
+        user: req.user,
+        success: 'Password updated successfully',
+        title: 'Settings'
+      });
+    } catch (error) {
+      res.status(500).render('error', {
+        message: 'Error changing password',
+        error: { status: 500 }
+      });
+    }
   },
   changeEmail: async (req, res) => {
-    const { newEmail } = req.body;
-    await pool.query('UPDATE users SET email = ? WHERE id = ?', [newEmail, req.session.userId]);
-    res.render('settings', { success: 'Đổi email thành công' });
+    try {
+      const { newEmail } = req.body;
+      await UserModel.updateEmail(req.user.id, newEmail);
+
+      res.render('settings', {
+        user: req.user,
+        success: 'Email updated successfully',
+        title: 'Settings'
+      });
+    } catch (error) {
+      res.status(500).render('error', {
+        message: 'Error changing email',
+        error: { status: 500 }
+      });
+    }
   },
   logout: (req, res) => {
     req.session.destroy();

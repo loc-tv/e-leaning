@@ -1,0 +1,39 @@
+<div class="container mt-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/admin/dashboard">Admin Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="/admin/questions">Quản lý câu hỏi</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Sửa câu hỏi</li>
+    </ol>
+  </nav>
+  <h1>Sửa câu hỏi</h1>
+  <form action="/admin/questions/edit/{{question.id}}" method="POST" class="row g-3">
+    <div class="col-md-6">
+      <input type="text" name="question" class="form-control" value="{{question.question}}" required>
+    </div>
+    <div class="col-md-2">
+      <input type="text" name="optionA" class="form-control" value="{{question.optionA}}" required>
+    </div>
+    <div class="col-md-2">
+      <input type="text" name="optionB" class="form-control" value="{{question.optionB}}" required>
+    </div>
+    <div class="col-md-2">
+      <input type="text" name="optionC" class="form-control" value="{{question.optionC}}" required>
+    </div>
+    <div class="col-md-2">
+      <input type="text" name="optionD" class="form-control" value="{{question.optionD}}" required>
+    </div>
+    <div class="col-md-2">
+      <select name="correct" class="form-select" required>
+        <option value="A" {{#if (eq question.correct "A")}}selected{{/if}}>A</option>
+        <option value="B" {{#if (eq question.correct "B")}}selected{{/if}}>B</option>
+        <option value="C" {{#if (eq question.correct "C")}}selected{{/if}}>C</option>
+        <option value="D" {{#if (eq question.correct "D")}}selected{{/if}}>D</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">Lưu thay đổi</button>
+    </div>
+  </form>
+  <a href="/admin/questions" class="btn btn-secondary mt-3">Quay lại danh sách</a>
+</div> 

@@ -5,5 +5,10 @@
     <li class="nav-item"><a href="/simulations"><i class="fas fa-vr-cardboard"></i> Simulations</a></li>
     <li class="nav-item"><a href="/quizzes"><i class="fas fa-question"></i> Quizzes</a></li>
     <li class="nav-item"><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
+    {{#if (eq role 'admin')}}
+      <li class="nav-item admin-section"><strong>Quản trị</strong></li>
+      <li class="nav-item"><a href="/admin/users"><i class="fas fa-users"></i> Quản lý User</a></li>
+      <li class="nav-item"><a href="/admin/questions"><i class="fas fa-tasks"></i> Quản lý Câu hỏi</a></li>
+    {{/if}}
   </ul>
 </aside>
