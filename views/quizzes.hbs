@@ -40,16 +40,14 @@
 <script>
 document.getElementById('quizForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
     const answers = {};
-    
-    // Collect all answers
-    for (let [key, value] of formData.entries()) {
-        if (key.startsWith('answer')) {
-            const questionId = key.replace('answer', '');
-            answers[questionId] = value;
-        }
-    }
+    const questionOrder = [];
+    document.querySelectorAll('.question-container').forEach(qDiv => {
+        const qid = qDiv.getAttribute('data-question-id');
+        questionOrder.push(qid);
+        const checked = qDiv.querySelector('input[type="radio"]:checked');
+        answers[qid] = checked ? checked.value : null;
+    });
     
     try {
         const response = await fetch('/quizzes/submit', {
@@ -57,16 +55,52 @@ document.getElementById('quizForm').addEventListener('submit', async (e) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ answers })
+            body: JSON.stringify({ answers, questionOrder })
         });
         
         const result = await response.json();
-        // Show feedback for each question (nếu có)
-        // ...
         // Show final score
         alert(`Quiz Completed!\nYour score: ${result.score}/${result.totalQuestions}`);
         // Disable submit button
         e.target.querySelector('button[type="submit"]').disabled = true;
+        
+        // Hiển thị chi tiết các câu sai
+        let detailHtml = '';
+        if (result.wrongAnswers && result.wrongAnswers.length > 0) {
+          detailHtml += `<div class="card mt-4 shadow-sm border-warning">
+            <div class="card-header bg-warning text-dark">
+              <i class='bi bi-exclamation-triangle-fill'></i> <b>Bạn trả lời sai ${result.wrongAnswers.length} câu:</b>
+            </div>
+            <div class="card-body">
+              <div class="row">`;
+          result.wrongAnswers.forEach((item, idx) => {
+            detailHtml += `<div class="col-12 col-md-6 mb-3">
+              <div class="quiz-wrong-card p-3 h-100">
+                <div class="fw-bold mb-2 text-secondary">Câu ${item.originalIndex !== undefined && item.originalIndex >= 0 ? (item.originalIndex + 1) : (idx + 1)}</div>
+                <div class="mb-1"><span class="fw-bold">Câu hỏi:</span> <span class="text-primary">${item.question}</span></div>
+                <div class="mb-1"><span class="fw-bold">Đáp án của bạn:</span> <span class="badge bg-danger bg-opacity-75">${item.yourAnswer !== null ? item.yourAnswer : 'Không chọn'}</span></div>
+                <div class="mb-1"><span class="fw-bold">Đáp án đúng:</span> <span class="badge bg-success bg-opacity-75">${item.correctAnswer}</span></div>
+                <div class="mb-1"><span class="fw-bold">Giải thích:</span> <span class="text-secondary">${item.explanation}</span></div>
+              </div>
+            </div>`;
+          });
+          detailHtml += '</div></div></div>';
+        } else {
+          detailHtml += `<div class="card mt-4 border-success shadow-sm">
+            <div class="card-body text-success text-center">
+              <i class="bi bi-emoji-laughing" style="font-size:2rem;"></i><br>
+              <b>Bạn đã trả lời đúng tất cả các câu hỏi! Xuất sắc!</b>
+            </div>
+          </div>`;
+        }
+        // Thêm vào sau form
+        let detailDiv = document.getElementById('quiz-detail');
+        if (!detailDiv) {
+          detailDiv = document.createElement('div');
+          detailDiv.id = 'quiz-detail';
+          e.target.parentNode.appendChild(detailDiv);
+        }
+        detailDiv.innerHTML = detailHtml;
         
     } catch (error) {
         console.error('Error:', error);
@@ -74,6 +108,8 @@ document.getElementById('quizForm').addEventListener('submit', async (e) => {
     }
 });
 </script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
 .question-container {
@@ -101,5 +137,57 @@ document.getElementById('quizForm').addEventListener('submit', async (e) => {
     margin-top: 10px;
     padding: 10px;
     border-radius: 5px;
+}
+
+.card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.card-header {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+.badge {
+  font-size: 1rem;
+  padding: 0.5em 0.8em;
+}
+.bg-success {
+  background-color: #28a745 !important;
+}
+.bg-danger {
+  background-color: #dc3545 !important;
+}
+.bg-warning {
+  background-color: #ffc107 !important;
+}
+.bg-opacity-75 {
+  opacity: 0.85;
+}
+.quiz-wrong-card {
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(255,193,7,0.08);
+  margin-bottom: 10px;
+  min-height: 150px;
+}
+.quiz-wrong-card .badge {
+  font-size: 1rem;
+  padding: 0.4em 0.8em;
+}
+@media (max-width: 600px) {
+  .card, .question-container {
+    padding: 10px;
+  }
+  .card-header {
+    font-size: 1rem;
+  }
+  .badge {
+    font-size: 0.95rem;
+  }
+  .quiz-wrong-card {
+    padding: 10px;
+    min-height: 120px;
+  }
 }
 </style> 

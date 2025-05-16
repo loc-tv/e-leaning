@@ -47,7 +47,9 @@ const QuizzesQuestionModel = {
   },
   getByIds: async (ids) => {
     try {
-      const [rows] = await db.execute('SELECT * FROM quizzes_questions WHERE id IN (?)', [ids]);
+      if (!ids.length) return [];
+      const placeholders = ids.map(() => '?').join(',');
+      const [rows] = await db.execute(`SELECT * FROM quizzes_questions WHERE id IN (${placeholders})`, ids);
       return rows.map(q => {
         try {
           return {

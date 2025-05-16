@@ -116,20 +116,35 @@ const UserController = {
   },
   submitQuiz: async (req, res) => {
     try {
-      const { answers } = req.body;
+      const { answers, questionOrder } = req.body;
       const ids = Object.keys(answers);
       const questions = await QuizzesQuestionModel.getByIds(ids);
       let score = 0;
+      let wrongAnswers = [];
       questions.forEach(q => {
         const qid = String(q.id);
+        let userAnswer = answers[qid];
+        const originalIndex = questionOrder ? questionOrder.indexOf(qid) : -1;
         if (
-          answers[qid] !== undefined &&
-          Number(answers[qid]) === Number(q.correct_answer)
+          userAnswer !== null &&
+          userAnswer !== undefined &&
+          !isNaN(userAnswer) &&
+          Number(userAnswer) >= 0 && Number(userAnswer) < q.options.length &&
+          Number(userAnswer) === Number(q.correct_answer)
         ) {
           score++;
+        } else {
+          wrongAnswers.push({
+            question: q.question,
+            options: q.options,
+            yourAnswer: (userAnswer !== null && userAnswer !== undefined && !isNaN(userAnswer) && Number(userAnswer) >= 0 && Number(userAnswer) < q.options.length) ? q.options[Number(userAnswer)] : null,
+            correctAnswer: q.options[q.correct_answer],
+            explanation: q.explanation,
+            originalIndex: originalIndex
+          });
         }
       });
-      res.json({ score, totalQuestions: questions.length });
+      res.json({ score, totalQuestions: questions.length, wrongAnswers });
     } catch (error) {
       console.error('Error submitting quiz:', error);
       res.status(500).json({ error: 'Server error' });
