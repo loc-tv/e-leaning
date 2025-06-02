@@ -1,179 +1,49 @@
 <div class="container mt-4">
-    <h1 class="text-center mb-4">Signal Modulation Simulation</h1>
-    
+    <h1 class="text-center mb-4">Mô phỏng Điều chế Tín hiệu Số</h1>
     <div class="row">
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Simulation Parameters</h5>
+                    <h5 class="card-title">Tham số mô phỏng</h5>
                     <form id="simulationForm">
                         <div class="mb-3">
-                            <label for="modulationType" class="form-label">Modulation Type</label>
+                            <label for="modulationType" class="form-label">Loại điều chế</label>
                             <select class="form-select" id="modulationType" name="modulationType">
-                                <option value="AM">Amplitude Modulation (AM)</option>
-                                <option value="FM">Frequency Modulation (FM)</option>
-                                <option value="PSK">Phase Shift Keying (PSK)</option>
+                                <option value="AM">Điều chế biên độ (AM)</option>
+                                <option value="FM">Điều chế tần số (FM)</option>
+                                <option value="PSK">Điều chế pha (PSK)</option>
                             </select>
                         </div>
-                        
                         <div class="mb-3">
-                            <label for="carrierFreq" class="form-label">Carrier Frequency (Hz)</label>
-                            <input type="number" class="form-control" id="carrierFreq" name="carrierFreq" 
-                                   value="{{defaultValues.carrierFreq}}" min="1" max="100">
+                            <label for="carrierFreq" class="form-label">Tần số sóng mang (Hz)</label>
+                            <input type="number" class="form-control" id="carrierFreq" name="carrierFreq" value="10" min="1" max="100">
                         </div>
-                        
                         <div class="mb-3">
-                            <label for="messageFreq" class="form-label">Message Frequency (Hz)</label>
-                            <input type="number" class="form-control" id="messageFreq" name="messageFreq" 
-                                   value="{{defaultValues.messageFreq}}" min="0.1" max="10" step="0.1">
+                            <label for="messageFreq" class="form-label">Tần số tín hiệu (Hz)</label>
+                            <input type="number" class="form-control" id="messageFreq" name="messageFreq" value="2" min="0.1" max="10" step="0.1">
                         </div>
-                        
                         <div class="mb-3">
-                            <label for="timePoints" class="form-label">Time Points</label>
-                            <input type="number" class="form-control" id="timePoints" name="timePoints" 
-                                   value="{{defaultValues.timePoints}}" min="50" max="500">
+                            <label for="amplitude" class="form-label">Biên độ (A<sub>c</sub>)</label>
+                            <input type="number" class="form-control" id="amplitude" name="amplitude" value="1" min="0.1" max="5" step="0.1">
                         </div>
-                        
-                        <button type="submit" class="btn btn-primary w-100">Run Simulation</button>
+                        <div class="mb-3" id="pskBitGroup" style="display:none;">
+                            <label for="pskBits" class="form-label">Dãy bit PSK (0/1, cách nhau dấu phẩy)</label>
+                            <input type="text" class="form-control" id="pskBits" name="pskBits" value="1,0,1,1,0,0,1,0">
+                        </div>
+                        <button type="button" class="btn btn-primary w-100" id="startSimBtn">Bắt đầu mô phỏng</button>
                     </form>
                 </div>
             </div>
         </div>
-        
         <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Carrier Signal</h5>
-                    <canvas id="carrierChart"></canvas>
-                </div>
-            </div>
-            
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Message Signal</h5>
-                    <canvas id="messageChart"></canvas>
-                </div>
-            </div>
-            
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Modulated Signal</h5>
-                    <canvas id="modulatedChart"></canvas>
+                    <h5 class="card-title">Khung hiển thị tín hiệu</h5>
+                    <canvas id="simulation-canvas" width="700" height="300" style="border:1.5px solid #6366f1; border-radius:8px; background:#f8fafc;"></canvas>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-let carrierChart, messageChart, modulatedChart;
-
-function initCharts() {
-    const chartConfig = {
-        type: 'line',
-        options: {
-            responsive: true,
-            animation: false,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Time'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Amplitude'
-                    }
-                }
-            }
-        }
-    };
-
-    carrierChart = new Chart(document.getElementById('carrierChart'), {
-        ...chartConfig,
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Carrier Signal',
-                data: [],
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-            }]
-        }
-    });
-
-    messageChart = new Chart(document.getElementById('messageChart'), {
-        ...chartConfig,
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Message Signal',
-                data: [],
-                borderColor: 'rgb(255, 99, 132)',
-                tension: 0.1
-            }]
-        }
-    });
-
-    modulatedChart = new Chart(document.getElementById('modulatedChart'), {
-        ...chartConfig,
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Modulated Signal',
-                data: [],
-                borderColor: 'rgb(54, 162, 235)',
-                tension: 0.1
-            }]
-        }
-    });
-}
-
-function updateCharts(data) {
-    carrierChart.data.labels = data.time;
-    carrierChart.data.datasets[0].data = data.carrier;
-    carrierChart.update();
-
-    messageChart.data.labels = data.time;
-    messageChart.data.datasets[0].data = data.message;
-    messageChart.update();
-
-    modulatedChart.data.labels = data.time;
-    modulatedChart.data.datasets[0].data = data.result;
-    modulatedChart.update();
-}
-
-document.getElementById('simulationForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
-    
-    try {
-        const response = await fetch('/simulations/calculate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        
-        const result = await response.json();
-        updateCharts(result);
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while running the simulation');
-    }
-});
-
-// Tự động submit form khi đổi loại điều chế hoặc thay đổi input
-['modulationType', 'carrierFreq', 'messageFreq', 'timePoints'].forEach(id => {
-    document.getElementById(id).addEventListener('change', function() {
-        document.getElementById('simulationForm').dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
-    });
-});
-
-document.addEventListener('DOMContentLoaded', initCharts);
-</script> 
+<script src="/js/script.js"></script>
+<script src="/js/simulations.js"></script>

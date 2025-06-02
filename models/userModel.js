@@ -58,7 +58,7 @@ const UserModel = {
     return rows[0];
   },
   findById: async (id) => {
-    const [rows] = await db.execute('SELECT * FROM users WHERE id = ?', [id]);
+    const [rows] = await db.execute('SELECT id, username, email, role FROM users WHERE id = ?', [id]);
     return rows[0];
   },
   updateRole: async (userId, role) => {

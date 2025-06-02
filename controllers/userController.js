@@ -153,18 +153,15 @@ const UserController = {
   register: async (req, res) => {
     const { username, password, email } = req.body;
     try {
-      // Kiểm tra username đã tồn tại chưa
-      const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
-      if (rows.length > 0) {
-        return res.status(400).send('Tài khoản đã tồn tại');
+      const existingUser = await UserModel.findByUsername(username);
+      if (existingUser) {
+        return res.render('register', { error: 'Tài khoản đã tồn tại', title: 'Register' });
       }
-      // Mã hóa mật khẩu
       const hashedPassword = await bcrypt.hash(password, 10);
-      // Lưu vào database
-      await pool.query('INSERT INTO users (username, password, email) VALUES (?, ?, ?)', [username, hashedPassword, email]);
+      await UserModel.create(username, hashedPassword, email); // luôn có role = 'user'
       res.redirect('/login');
     } catch (err) {
-      res.status(500).send('Lỗi server');
+      res.status(500).render('register', { error: 'Lỗi server', title: 'Register' });
     }
   },
   login: async (req, res) => {

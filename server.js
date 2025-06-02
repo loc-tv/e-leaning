@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const { isAuthenticated } = require('./middleware/authMiddleware');
 const setRole = require('./middleware/setRole');
 
+
 // Load environment variables
 dotenv.config();
 
@@ -69,7 +70,11 @@ app.use((req, res, next) => {
 // Middleware xác thực và gán role cho các route cần bảo vệ
 app.use(setRole);
 
-// Route public (login, register, ...)
+// API Routes
+const apiRoutes = require('./api/v1/routes');
+app.use('/api/v1', apiRoutes);
+
+// Web Routes
 const userRoutes = require('./routes/userRoutes');
 app.use('/', userRoutes);
 
@@ -81,7 +86,7 @@ const adminRoutes = require('./routes/adminRoutes');
 app.use('/admin', adminRoutes);
 
 // Trang chủ (yêu cầu đăng nhập)
-app.get('/', (req, res) => {
+app.get('/', isAuthenticated, (req, res) => {
   res.render('home', {
     title: 'Digital Communication Learning Platform',
     layout: 'main',

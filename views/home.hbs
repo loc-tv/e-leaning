@@ -1,34 +1,34 @@
 <i class="fas fa-search search-icon"></i>
-<h1>Digital Communication Techniques</h1>
+<h1>Các Kỹ Thuật Truyền Thông Số</h1>
 
 <div class="overview">
     <p><strong>Tổng quan:</strong> Khóa học này cung cấp kiến thức nền tảng về các kỹ thuật truyền thông số như điều chế, mã hóa tín hiệu, sửa lỗi và truyền dẫn số. Sinh viên sẽ được học lý thuyết, mô phỏng thực tế và làm bài trắc nghiệm để củng cố kiến thức.</p>
 </div>
 
 <div class="tabs">
-    <button class="tab-button active" data-tab="modulation">Modulation Techniques</button>
-    <button class="tab-button" data-tab="encoding">Signal Encoding</button>
-    <button class="tab-button" data-tab="correction">Error Correction</button>
-    <button class="tab-button" data-tab="transmission">Digital Transmission</button>
+    <button class="tab-button active" data-tab="modulation">Kỹ thuật điều chế</button>
+    <button class="tab-button" data-tab="encoding">Mã hóa tín hiệu</button>
+    <button class="tab-button" data-tab="correction">Sửa lỗi</button>
+    <button class="tab-button" data-tab="transmission">Truyền dẫn số</button>
 </div>
 
 <div class="tab-content" id="modulation">
-    <h2>Modulation</h2>
-    <p>Content for Modulation will appear here.</p>
+    <h2>Điều chế</h2>
+    <p>Nội dung về các phương pháp điều chế sẽ hiển thị tại đây.</p>
     <div class="card-grid">
         <div class="card">
             <i class="fas fa-wave-square"></i>
-            <h3>Điều chế AM</h3>
+            <h3>Điều chế biên độ (AM)</h3>
             <a href="#" onclick="showModulationDetail('am'); return false;">Xem chi tiết</a>
         </div>
         <div class="card">
             <i class="fas fa-broadcast-tower"></i>
-            <h3>Điều chế FM</h3>
+            <h3>Điều chế tần số (FM)</h3>
             <a href="#" onclick="showModulationDetail('fm'); return false;">Xem chi tiết</a>
         </div>
         <div class="card">
             <i class="fas fa-random"></i>
-            <h3>Điều chế PSK</h3>
+            <h3>Điều chế pha (PSK)</h3>
             <a href="#" onclick="showModulationDetail('psk'); return false;">Xem chi tiết</a>
         </div>
     </div>
@@ -36,18 +36,72 @@
 </div>
 
 <div class="tab-content" id="encoding" style="display:none;">
-    <h2>Signal Encoding</h2>
-    <p>Content for Signal Encoding will appear here.</p>
+    <h2>Mã hóa tín hiệu</h2>
+    <p>Nội dung về các phương pháp mã hóa tín hiệu số (ví dụ: NRZ, Manchester, AMI) sẽ hiển thị tại đây.</p>
+    <div class="card-grid">
+        <div class="card">
+            <i class="fas fa-grip-lines"></i>
+            <h3>Mã hóa NRZ (Non-Return to Zero)</h3>
+            <a href="#" onclick="showEncodingDetail('nrz'); return false;">Xem chi tiết</a>
+        </div>
+        <div class="card">
+            <i class="fas fa-exchange-alt"></i>
+            <h3>Mã hóa Manchester</h3>
+            <a href="#" onclick="showEncodingDetail('manchester'); return false;">Xem chi tiết</a>
+        </div>
+        <div class="card">
+            <i class="fas fa-grip-lines-vertical"></i>
+            <h3>Mã hóa AMI (Bipolar)</h3>
+            <a href="#" onclick="showEncodingDetail('bipolar'); return false;">Xem chi tiết</a>
+        </div>
+    </div>
+    <div id="encoding-detail" class="modulation-detail" style="display:none; margin-top: 24px;"></div>
 </div>
 
 <div class="tab-content" id="correction" style="display:none;">
-    <h2>Error Correction</h2>
-    <p>Content for Error Correction will appear here.</p>
+    <h2>Sửa lỗi</h2>
+    <p>Nội dung về các kỹ thuật phát hiện và sửa lỗi (ví dụ: Bit chẵn lẻ, CRC, mã Hamming) sẽ hiển thị tại đây.</p>
+    <div class="card-grid">
+        <div class="card">
+            <i class="fas fa-check-circle"></i>
+            <h3>Bit chẵn lẻ (Parity Bit)</h3>
+            <a href="#" onclick="showCorrectionDetail('parity'); return false;">Xem chi tiết</a>
+        </div>
+        <div class="card">
+            <i class="fas fa-divide"></i>
+            <h3>Kiểm tra dư (CRC)</h3>
+            <a href="#" onclick="showCorrectionDetail('crc'); return false;">Xem chi tiết</a>
+        </div>
+        <div class="card">
+            <i class="fas fa-code"></i>
+            <h3>Mã Hamming</h3>
+            <a href="#" onclick="showCorrectionDetail('hamming'); return false;">Xem chi tiết</a>
+        </div>
+    </div>
+    <div id="correction-detail" class="modulation-detail" style="display:none; margin-top: 24px;"></div>
 </div>
 
 <div class="tab-content" id="transmission" style="display:none;">
-    <h2>Digital Transmission</h2>
-    <p>Content for Digital Transmission will appear here.</p>
+    <h2>Truyền dẫn số</h2>
+    <p>Nội dung về các kỹ thuật truyền dẫn số (truyền dẫn cơ sở, truyền dẫn băng rộng, tốc độ bit, băng thông) sẽ hiển thị tại đây.</p>
+    <div class="card-grid">
+        <div class="card">
+            <i class="fas fa-ethernet"></i>
+            <h3>Truyền dẫn cơ sở (Baseband)</h3>
+            <a href="#" onclick="showTransmissionDetail('baseband'); return false;">Xem chi tiết</a>
+        </div>
+        <div class="card">
+            <i class="fas fa-broadcast-tower"></i>
+            <h3>Truyền dẫn băng rộng (Broadband)</h3>
+            <a href="#" onclick="showTransmissionDetail('broadband'); return false;">Xem chi tiết</a>
+        </div>
+        <div class="card">
+            <i class="fas fa-tachometer-alt"></i>
+            <h3>Tốc độ bit & Băng thông</h3>
+            <a href="#" onclick="showTransmissionDetail('bitrate'); return false;">Xem chi tiết</a>
+        </div>
+    </div>
+    <div id="transmission-detail" class="modulation-detail" style="display:none; margin-top: 24px;"></div>
 </div>
 
 <div class="page" id="study-materials" style="display: block;">

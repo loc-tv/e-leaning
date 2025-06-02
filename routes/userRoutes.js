@@ -40,16 +40,13 @@ router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await UserModel.findByUsername(username);
-    console.log('User:', user);
     if (!user) {
       return res.render('login', { 
         error: 'Invalid username or password',
         title: 'Login'
       });
     }
-    console.log('Password from DB:', user.password);
     const validPassword = await bcrypt.compare(password, user.password);
-    console.log('Password valid:', validPassword);
     if (!validPassword) {
       return res.render('login', { 
         error: 'Invalid username or password',
@@ -67,15 +64,28 @@ router.post('/login', async (req, res) => {
     // Lưu token vào cookie
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
       maxAge: 24 * 60 * 60 * 1000 // 24 hours
     });
-
     // Chuyển hướng dựa vào role
     if (user.role === 'admin') {
-      res.redirect('/admin/dashboard');
+      res.send(`
+        <html>
+          <body>
+            <script>window.location.href = '/admin/dashboard';</script>
+          </body>
+        </html>
+      `);
     } else {
-      res.redirect('/');
+      res.send(`
+        <html>
+          <body>
+            <script>window.location.href = '/';</script>
+          </body>
+        </html>
+      `);
     }
   } catch (error) {
     res.render('login', { 
