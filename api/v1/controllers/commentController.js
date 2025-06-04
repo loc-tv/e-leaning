@@ -27,7 +27,19 @@ exports.updateComment = async (req, res) => {
 exports.deleteComment = async (req, res) => {
     const { commentId } = req.params;
     const userId = req.user.id;
-    const success = await CommentModel.delete(commentId, userId);
+    const userRole = req.user.role;
+    let success = false;
+    if (userRole === 'admin') {
+        // Admin được phép xoá bất kỳ comment nào
+        const [result] = await require('../../../config/db').execute(
+            'DELETE FROM comments WHERE id = ?',
+            [commentId]
+        );
+        success = result.affectedRows > 0;
+    } else {
+        // User thường chỉ được xoá comment của mình
+        success = await CommentModel.delete(commentId, userId);
+    }
     if (!success) return res.status(403).json({ success: false, message: 'Not allowed' });
     res.json({ success: true });
 };

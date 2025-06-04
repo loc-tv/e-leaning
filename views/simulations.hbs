@@ -47,4 +47,19 @@
 </div>
 <script src="/js/script.js"></script>
 <script src="/js/simulations.js"></script>
+<script>
+  window.currentUserId = "{{user.id}}";
+  window.currentUserRole = "{{user.role}}";
+</script>
 {{> comments tabId=tabId user=user}}
+<!-- Modal xác nhận xoá bình luận -->
+<div id="deleteCommentModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:24px; border-radius:10px; min-width:320px; box-shadow:0 4px 24px rgba(0,0,0,0.12); max-width:90vw; text-align:center;">
+    <h4 style="margin-top:0;">Xác nhận xoá bình luận</h4>
+    <div style="margin:18px 0; color:#c00;">Bạn có chắc muốn xoá bình luận này không?</div>
+    <div style="margin-top:16px; text-align:right;">
+      <button id="cancelDeleteBtn" style="background:#eee; color:#333; border:none; padding:7px 16px; border-radius:5px; margin-right:8px; cursor:pointer;">Hủy</button>
+      <button id="confirmDeleteBtn" style="background:#dc3545; color:#fff; border:none; padding:7px 16px; border-radius:5px; cursor:pointer;">Xoá</button>
+    </div>
+  </div>
+</div>

@@ -146,7 +146,36 @@
 
 <script>console.log('tabId:', {{tabId}});</script>
 
+<script>
+  window.currentUserId = "{{user.id}}";
+  window.currentUserRole = "{{user.role}}";
+</script>
+
 {{> comments tabId=tabId user=user}}
+
+<!-- Modal sửa bình luận -->
+<div id="editCommentModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:24px; border-radius:10px; min-width:320px; box-shadow:0 4px 24px rgba(0,0,0,0.12); max-width:90vw;">
+    <h4 style="margin-top:0;">Sửa bình luận</h4>
+    <textarea id="editCommentContent" style="width:100%; min-height:70px; border-radius:6px; border:1px solid #ccc; padding:8px;"></textarea>
+    <div style="margin-top:16px; text-align:right;">
+      <button id="cancelEditBtn" style="background:#eee; color:#333; border:none; padding:7px 16px; border-radius:5px; margin-right:8px; cursor:pointer;">Hủy</button>
+      <button id="saveEditBtn" style="background:#007bff; color:#fff; border:none; padding:7px 16px; border-radius:5px; cursor:pointer;">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal xác nhận xoá bình luận -->
+<div id="deleteCommentModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:24px; border-radius:10px; min-width:320px; box-shadow:0 4px 24px rgba(0,0,0,0.12); max-width:90vw; text-align:center;">
+    <h4 style="margin-top:0;">Xác nhận xoá bình luận</h4>
+    <div style="margin:18px 0; color:#c00;">Bạn có chắc muốn xoá bình luận này không?</div>
+    <div style="margin-top:16px; text-align:right;">
+      <button id="cancelDeleteBtn" style="background:#eee; color:#333; border:none; padding:7px 16px; border-radius:5px; margin-right:8px; cursor:pointer;">Hủy</button>
+      <button id="confirmDeleteBtn" style="background:#dc3545; color:#fff; border:none; padding:7px 16px; border-radius:5px; cursor:pointer;">Xoá</button>
+    </div>
+  </div>
+</div>
 
 
 
