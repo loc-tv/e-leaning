@@ -1,0 +1,72 @@
+<div class="comments-section">
+    <h4>Bình luận</h4>
+    <form id="commentForm-{{tabId}}" onsubmit="submitComment(event, {{tabId}})">
+        <textarea id="commentContent-{{tabId}}" placeholder="Viết bình luận..." required></textarea>
+        <button type="submit">Gửi</button>
+    </form>
+    <div id="commentsList-{{tabId}}"></div>
+</div>
+<script>
+const currentUserId = String({{user.id}});
+
+async function loadComments(tabId) {
+    const response = await fetch(`/api/v1/comments?tabId=${tabId}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    });
+    const data = await response.json();
+    const commentsList = document.getElementById(`commentsList-${tabId}`);
+    commentsList.innerHTML = (data.data || []).map(comment => `
+        <div class=\"comment\" data-id=\"${comment.id}\">\n            <b>${comment.username}</b> <span>${new Date(comment.created_at).toLocaleString()}</span>\n            <div>${comment.content}</div>\n            ${String(comment.user_id) === currentUserId ? `\n                <button onclick=\\"editComment(${comment.id}, ${tabId})\\">Sửa</button>\n                <button onclick=\\"deleteComment(${comment.id}, ${tabId})\\">Xóa</button>\n            ` : ''}\n        </div>
+    `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadComments({{tabId}});
+});
+
+async function submitComment(event, tabId) {
+    event.preventDefault();
+    const content = document.getElementById(`commentContent-${tabId}`).value;
+    await fetch('/api/v1/comments', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ tabId, content })
+    });
+    document.getElementById(`commentContent-${tabId}`).value = '';
+    loadComments(tabId);
+}
+
+async function editComment(commentId, tabId) {
+    const newContent = prompt('Sửa bình luận:');
+    if (!newContent) return;
+    await fetch(`/api/v1/comments/${commentId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ content: newContent })
+    });
+    loadComments(tabId);
+}
+
+async function deleteComment(commentId, tabId) {
+    if (!confirm('Bạn có chắc muốn xóa?')) return;
+    await fetch(`/api/v1/comments/${commentId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    });
+    loadComments(tabId);
+}
+</script>
+<style>
+.comments-section { margin-top: 30px; background: #f9f9f9; border-radius: 8px; padding: 16px; }
+.comments-section textarea { width: 100%; min-height: 60px; margin-bottom: 8px; }
+.comment { background: #fff; border-radius: 4px; margin-bottom: 10px; padding: 8px 12px; }
+.comment b { color: #007bff; }
+.comment span { color: #888; font-size: 0.9em; margin-left: 8px; }
+.comment button { margin-right: 8px; }
+</style> 

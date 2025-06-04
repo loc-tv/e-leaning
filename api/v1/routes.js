@@ -5,6 +5,7 @@ const userController = require('./controllers/userController');
 const quizController = require('./controllers/quizController');
 const theoryController = require('./controllers/theoryController');
 const simulationController = require('./controllers/simulationController');
+const commentController = require('./controllers/commentController');
 const { isAuthenticated, isAdmin } = require('./middleware/authMiddleware');
 
 // Auth Routes
@@ -33,6 +34,12 @@ router.get('/theories/:id', isAuthenticated, theoryController.getTheoryById);
 // Simulation Routes
 router.get('/simulations', isAuthenticated, simulationController.getSimulations);
 router.post('/simulations/calculate', isAuthenticated, simulationController.calculateModulation);
+
+// Comment Routes
+router.post('/comments', isAuthenticated, commentController.createComment);
+router.get('/comments', isAuthenticated, commentController.getComments);
+router.put('/comments/:commentId', isAuthenticated, commentController.updateComment);
+router.delete('/comments/:commentId', isAuthenticated, commentController.deleteComment);
 
 // Admin Routes
 router.get('/admin/users', isAuthenticated, isAdmin, userController.getAllUsers);

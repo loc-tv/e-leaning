@@ -8,6 +8,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const { isAuthenticated } = require('./middleware/authMiddleware');
 const setRole = require('./middleware/setRole');
+const TabModel = require('./models/tabModel');
 
 
 // Load environment variables
@@ -86,11 +87,13 @@ const adminRoutes = require('./routes/adminRoutes');
 app.use('/admin', adminRoutes);
 
 // Trang chủ (yêu cầu đăng nhập)
-app.get('/', isAuthenticated, (req, res) => {
+app.get('/', isAuthenticated, async (req, res) => {
+  const tab = await TabModel.getByName('Study Materials');
   res.render('home', {
     title: 'Digital Communication Learning Platform',
     layout: 'main',
-    user: req.user
+    user: req.user,
+    tabId: tab ? tab.id : null
   });
 });
 

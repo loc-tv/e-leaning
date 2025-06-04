@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const UserModel = require('../models/userModel');
 const { isAuthenticated } = require('../middleware/authMiddleware');
 const userController = require('../controllers/userController.js');
+const TabModel = require('../models/tabModel');
+const QuizzesQuestionModel = require('../models/quizzesQuestionModel');
 
 // Đăng ký
 router.post('/register', async (req, res) => {
@@ -116,35 +118,47 @@ router.get('/register', (req, res) => {
 });
 
 // Trang chủ (yêu cầu đăng nhập)
-router.get('/home', isAuthenticated, (req, res) => {
+router.get('/home', isAuthenticated, async (req, res) => {
+  const tab = await TabModel.getByName('Study Materials');
+  console.log('Tab for Study Materials:', tab);
   res.render('home', {
     user: req.user,
     role: req.user.role,
-    title: 'Home'
+    title: 'Home',
+    tabId: tab ? tab.id : null
   });
 });
 
-router.get('/settings', isAuthenticated, (req, res) => {
-  res.render('settings', {
-    user: req.user,
-    role: req.user.role,
-    title: 'Settings'
-  });
+// Study Materials
+router.get('/study-materials', isAuthenticated, async (req, res) => {
+    const tab = await TabModel.getByName('Study Materials');
+    console.log('Tab for Study Materials (route /study-materials):', tab);
+    res.render('home', { user: req.user, tabId: tab ? tab.id : null });
 });
+
+// Simulations
+router.get('/simulations', isAuthenticated, async (req, res) => {
+    const tab = await TabModel.getByName('Simulations');
+    res.render('simulations', { user: req.user, tabId: tab ? tab.id : null });
+});
+
+// Quizzes
+router.get('/quizzes', isAuthenticated, async (req, res) => {
+    const tab = await TabModel.getByName('Quizzes');
+    const questions = await QuizzesQuestionModel.getAll();
+    res.render('quizzes', { user: req.user, tabId: tab ? tab.id : null, questions });
+});
+
+// Settings (KHÔNG truyền tabId, KHÔNG render comments)
+router.get('/settings', isAuthenticated, (req, res) => {
+    res.render('settings', { user: req.user });
+});
+
 router.post('/settings/change-password', isAuthenticated, userController.changePassword);
 router.post('/settings/change-email', isAuthenticated, userController.changeEmail);
 router.get('/logout', isAuthenticated, userController.logout);
 
-router.get('/simulations', isAuthenticated, (req, res) => {
-  res.render('simulations', {
-    user: req.user,
-    role: req.user.role,
-    title: 'Simulations'
-  });
-});
 router.post('/simulations/calculate', isAuthenticated, userController.calculateModulation);
-
-router.get('/quizzes', isAuthenticated, userController.showQuiz);
 router.post('/quizzes/submit', isAuthenticated, userController.submitQuiz);
 
 module.exports = router;
