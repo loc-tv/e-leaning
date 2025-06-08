@@ -21,6 +21,7 @@ const isAuthenticated = async (req, res, next) => {
     req.session.role = user.role;
     next();
   } catch (error) {
+    console.error('Auth error:', error);
     res.clearCookie('token');
     return res.redirect('/login');
   }

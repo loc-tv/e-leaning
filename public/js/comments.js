@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Hàm load comment
         async function loadComments() {
             const response = await fetch(`/api/v1/comments?tabId=${tabId}`, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                headers: { 'Authorization': `Bearer ${getToken()}` }
             });
             const data = await response.json();
             const commentsList = section.querySelector(`#commentsList-${tabId}`);
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${getToken()}`
                 },
                 body: JSON.stringify({ tabId, content })
             });
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                            'Authorization': `Bearer ${getToken()}`
                         },
                         body: JSON.stringify({ content: newContent })
                     });
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     const res = await fetch(`/api/v1/comments/${commentId}`, {
                         method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                        headers: { 'Authorization': `Bearer ${getToken()}` }
                     });
                     const data = await res.json();
                     if (!data.success) {
@@ -132,4 +132,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Lần đầu load comment
         loadComments();
     });
-}); 
+});
+
+function getToken() {
+    return localStorage.getItem('token') || sessionStorage.getItem('token');
+} 

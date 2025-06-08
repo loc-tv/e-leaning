@@ -161,6 +161,21 @@ router.get('/logout', isAuthenticated, userController.logout);
 router.post('/simulations/calculate', isAuthenticated, userController.calculateModulation);
 router.post('/quizzes/submit', isAuthenticated, userController.submitQuiz);
 
+// Thêm route nhận token từ client và set cookie
+router.post('/set-token', (req, res) => {
+  console.log('SET-TOKEN CALLED', req.body); // Log để kiểm tra
+  const { token } = req.body;
+  if (!token) return res.status(400).json({ error: 'No token provided' });
+  res.cookie('token', token, {
+    // httpOnly: true, // Tạm thời bỏ để test
+    secure: false,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  });
+  res.status(200).json({ success: true });
+});
+
 module.exports = router;
 
 

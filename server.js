@@ -97,6 +97,12 @@ app.get('/', isAuthenticated, async (req, res) => {
   });
 });
 
+// Route test cookie
+app.get('/test-cookie', (req, res) => {
+  res.cookie('test', '123');
+  res.send('Cookie set');
+});
+
 // Error handling
 app.use((err, req, res, next) => {
   logger.error(err.stack);

@@ -44,11 +44,17 @@ const UserModel = {
       callback(err);
     }
   },
-  create: async (username, hashedPassword, email, role = 'user') => {
+  create: async (username, hashedPassword, email, fullName, phone, role = 'user') => {
     await db.execute(
-      'INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)',
-      [username, hashedPassword, email, role]
+      'INSERT INTO users (username, password, email, full_name, phone, role, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [username, hashedPassword, email, fullName, phone, role, false]
     );
+    // Truy vấn lại user vừa tạo
+    const [rows] = await db.execute(
+      'SELECT * FROM users WHERE username = ?',
+      [username]
+    );
+    return rows[0];
   },
   findByUsername: async (username) => {
     const [rows] = await db.execute(
@@ -57,8 +63,18 @@ const UserModel = {
     );
     return rows[0];
   },
+  findByEmail: async (email) => {
+    const [rows] = await db.execute(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
+    return rows[0];
+  },
   findById: async (id) => {
-    const [rows] = await db.execute('SELECT id, username, email, role FROM users WHERE id = ?', [id]);
+    const [rows] = await db.execute(
+      'SELECT id, username, email, full_name, phone, role, email_verified, created_at FROM users WHERE id = ?',
+      [id]
+    );
     return rows[0];
   },
   updateRole: async (userId, role) => {
@@ -79,8 +95,33 @@ const UserModel = {
   },
   updateEmail: async (userId, email) => {
     await db.execute(
-      'UPDATE users SET email = ? WHERE id = ?',
-      [email, userId]
+      'UPDATE users SET email = ?, email_verified = ? WHERE id = ?',
+      [email, false, userId]
+    );
+  },
+  updateEmailVerification: async (userId, verified) => {
+    await db.execute(
+      'UPDATE users SET email_verified = ? WHERE id = ?',
+      [verified, userId]
+    );
+  },
+  updateResetToken: async (userId, token, expires) => {
+    await db.execute(
+      'UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?',
+      [token, expires, userId]
+    );
+  },
+  findByResetToken: async (token) => {
+    const [rows] = await db.execute(
+      'SELECT * FROM users WHERE reset_token = ? AND reset_token_expires > NOW()',
+      [token]
+    );
+    return rows[0];
+  },
+  clearResetToken: async (userId) => {
+    await db.execute(
+      'UPDATE users SET reset_token = NULL, reset_token_expires = NULL WHERE id = ?',
+      [userId]
     );
   }
 };

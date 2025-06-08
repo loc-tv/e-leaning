@@ -201,64 +201,204 @@ function showModulationDetail(type) {
     let html = '';
     if (type === 'am') {
         html = `
-            <h3>Điều chế AM (Amplitude Modulation)</h3>
-            <p><b>Khái niệm:</b> Điều chế biên độ (AM) là phương pháp điều chế trong đó biên độ của sóng mang (carrier) được thay đổi theo tín hiệu thông tin (tín hiệu cần truyền).</p>
-            <p><b>Nguyên lý:</b><br>
-                Sóng mang: <code>s<sub>c</sub>(t) = A<sub>c</sub> \cdot \sin(2\pi f<sub>c</sub> t)</code><br>
-                Tín hiệu điều chế: <code>m(t)</code><br>
-                Sóng AM: <code>s(t) = [A<sub>c</sub> + m(t)] \cdot \sin(2\pi f<sub>c</sub> t)</code>
+        <div class="am-theory-box" style="background:#f8fafd;border-radius:14px;padding:28px 24px 18px 24px;box-shadow:0 2px 12px #e3e8f7;max-width:750px;margin:auto;">
+            <h2 style="color:#1976d2;"><i class="fas fa-wave-square"></i> Điều chế biên độ (AM)</h2>
+            <p style="font-size:1.1em;">
+                <b>Khái niệm:</b> <span style="color:#333">
+                <b>Điều chế biên độ</b> (<b>AM</b> - <i>Amplitude Modulation</i>) là phương pháp điều chế trong đó <b>biên độ</b> của sóng mang (<i>carrier</i>) được thay đổi theo tín hiệu thông tin <b>m(t)</b> cần truyền.<br>
+                <a href="https://vi.wikipedia.org/wiki/%C4%90i%E1%BB%81u_ch%E1%BA%BF_bi%C3%AAn_%C4%91%E1%BB%99" target="_blank" style="font-size:0.95em;color:#1976d2;">(Tham khảo Wikipedia)</a>
+                </span>
             </p>
-            <ul>
-                <li><b>Đặc điểm:</b> Đơn giản, dễ thực hiện. Nhược điểm: dễ bị nhiễu, hiệu suất sử dụng băng thông và năng lượng thấp.</li>
-                <li><b>Ứng dụng:</b> Phát thanh AM, truyền hình analog.</li>
-            </ul>
-            <p><b>Ví dụ:</b> Nếu tín hiệu âm thanh là sóng sin 1kHz, sóng mang là 10kHz, biên độ sóng mang 1V, biên độ tín hiệu 0.5V, thì tín hiệu AM sẽ có dạng như hình dưới.</p>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Amfm3-en-de.gif" alt="AM Example" style="max-width:320px;display:block;margin:12px 0;">
-            <button onclick="closeModulationDetail()">Đóng</button>
+            <div style="margin:18px 0 12px 0;">
+                <b>Nguyên lý & Công thức:</b>
+                <ul style="margin:8px 0 0 0;">
+                    <li>Sóng mang: <div>$$s_c(t) = A_c \\cos(2\\pi f_c t)$$</div></li>
+                    <li>Tín hiệu điều chế: <div>$$m(t) = A_m \\cos(2\\pi f_m t)$$</div></li>
+                    <li>Sóng AM: <div>$$s(t) = [A_c + m(t)]\\cos(2\\pi f_c t) = A_c[1 + \\mu \\cos(2\\pi f_m t)]\\cos(2\\pi f_c t)$$</div></li>
+                </ul>
+                <div style="margin-top:10px;"><b>Chỉ số điều chế (hệ số điều chế):</b></div>
+                <div style="text-align:center;font-size:1.2em;margin:12px 0;">$$\\mu = \\frac{A_m}{A_c}$$</div>
+                <div style="font-size:0.98em;color:#555;margin-top:4px;">
+                    Trong đó: \(A_m\) là biên độ cực đại của tín hiệu điều chế, \(A_c\) là biên độ sóng mang.
+                </div>
+            </div>
+            <table style="width:100%;margin:16px 0 12px 0;background:#fff;border-radius:8px;box-shadow:0 1px 4px #e3e8f7;">
+                <tr>
+                    <td style="padding:8px 12px;"><b><i class="fas fa-info-circle" style="color:#1976d2"></i> Đặc điểm</b></td>
+                    <td style="padding:8px 12px;">
+                        Đơn giản, dễ thực hiện, máy thu rẻ, dễ sản xuất.<br>
+                        Nhược điểm: Dễ bị nhiễu, hiệu suất sử dụng năng lượng thấp (chỉ ~33%), băng thông gấp đôi tín hiệu gốc.
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 12px;"><b><i class="fas fa-broadcast-tower" style="color:#43a047"></i> Ứng dụng</b></td>
+                    <td style="padding:8px 12px;">
+                        Phát thanh AM (sóng trung, sóng ngắn), truyền hình analog, truyền dữ liệu không dây đơn giản.
+                    </td>
+                </tr>
+            </table>
+            <div style="margin:18px 0 10px 0;">
+                <b>Ví dụ thực tế:</b>
+                <ul style="margin:8px 0 0 0;">
+                    <li>Nếu tín hiệu âm thanh là sóng sin 1kHz, sóng mang là 10kHz, biên độ sóng mang 1V, biên độ tín hiệu 0.5V, thì tín hiệu AM sẽ có dạng như hình dưới.</li>
+                    <li>Chỉ số điều chế h = 0.5 nghĩa là biên độ sóng mang biến thiên 50% trên và dưới mức không điều chế.</li>
+                </ul>
+            </div>
+            <div style="text-align:center;margin:18px 0 10px 0;">
+                <img src="/images/am_example.gif" alt="AM Example" style="max-width:360px;border-radius:8px;box-shadow:0 1px 8px #e3e8f7;">
+                <div style="font-size:0.98em;color:#666;margin-top:4px;">Biểu diễn sóng AM: biên độ sóng mang thay đổi theo tín hiệu thông tin</div>
+            </div>
+            <div style="text-align:center;margin:18px 0 10px 0;">
+                <img src="/images/am_spectrum.gif" alt="AM Spectrum" style="max-width:360px;border-radius:8px;box-shadow:0 1px 8px #e3e8f7;">
+                <div style="font-size:0.98em;color:#666;margin-top:4px;">Phổ tần số của tín hiệu AM: hai dải biên và sóng mang trung tâm</div>
+            </div>
+            <button onclick="closeModulationDetail()" style="margin-top:18px;background:#1976d2;color:#fff;padding:8px 24px;border:none;border-radius:6px;font-size:1.1em;box-shadow:0 1px 4px #e3e8f7;cursor:pointer;transition:background 0.2s;">Đóng</button>
+        </div>
         `;
     } else if (type === 'fm') {
         html = `
-            <h3>Điều chế FM (Frequency Modulation)</h3>
-            <p><b>Khái niệm:</b> Điều chế tần số (FM) là phương pháp điều chế trong đó tần số của sóng mang được thay đổi theo tín hiệu thông tin.</p>
-            <p><b>Nguyên lý:</b><br>
-                Sóng mang: <code>s<sub>c</sub>(t) = A<sub>c</sub> \cdot \sin(2\pi f<sub>c</sub> t)</code><br>
-                Sóng FM: <code>s(t) = A<sub>c</sub> \cdot \sin[2\pi f<sub>c</sub> t + 2\pi k_f \int m(\tau) d\tau]</code><br>
-                <span style="font-size:0.98em;">với <b>k<sub>f</sub></b> là hệ số điều chế tần số, <b>m(t)</b> là tín hiệu thông tin.</span>
+        <div class="fm-theory-box" style="background:#f8fafd;border-radius:14px;padding:28px 24px 18px 24px;box-shadow:0 2px 12px #e3e8f7;max-width:750px;margin:auto;">
+            <h2 style="color:#1976d2;"><i class="fas fa-broadcast-tower"></i> Điều chế tần số (FM)</h2>
+            <p style="font-size:1.1em;">
+                <b>Khái niệm:</b> <span style="color:#333">
+                <b>Điều chế tần số</b> (<b>FM</b> - <i>Frequency Modulation</i>) là phương pháp điều chế trong đó <b>tần số</b> của sóng mang được thay đổi theo tín hiệu thông tin <b>m(t)</b> cần truyền.<br>
+                <a href="https://vi.wikipedia.org/wiki/%C4%90i%E1%BB%81u_ch%E1%BA%BF_t%E1%BA%A7n_s%E1%BB%91" target="_blank" style="font-size:0.95em;color:#1976d2;">(Tham khảo Wikipedia)</a>
+                </span>
             </p>
-            <ul>
-                <li><b>Đặc điểm:</b> Chống nhiễu tốt hơn AM. Băng thông rộng hơn AM.</li>
-                <li><b>Ứng dụng:</b> Phát thanh FM, truyền hình, liên lạc vô tuyến.</li>
-            </ul>
-            <p><b>Ví dụ:</b> Nếu tín hiệu âm thanh là sóng sin 1kHz, sóng mang là 10kHz, độ lệch tần số 5kHz, thì tín hiệu FM sẽ có dạng như hình dưới.</p>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Amfm3-en-de.gif" alt="FM Example" style="max-width:320px;display:block;margin:12px 0;object-fit:contain;">
-            <button onclick="closeModulationDetail()">Đóng</button>
+            <div style="margin:18px 0 12px 0;">
+                <b>Nguyên lý & Công thức:</b>
+                <ul style="margin:8px 0 0 0;">
+                    <li>Sóng mang: <div>$$s_c(t) = A_c \\cos(2\\pi f_c t)$$</div></li>
+                    <li>Tín hiệu điều chế: <div>$$m(t) = A_m \\cos(2\\pi f_m t)$$</div></li>
+                    <li>Sóng FM: <div>$$s(t) = A_c \\cos\\left(2\\pi f_c t + 2\\pi k_f \\int_0^t m(\\tau) d\\tau\\right)$$<br>$$= A_c \\cos\\left(2\\pi f_c t + \\beta \\sin(2\\pi f_m t)\\right)$$</div></li>
+                </ul>
+                <div style="margin-top:10px;"><b>Chỉ số điều chế FM (hệ số điều chế):</b></div>
+                <div style="text-align:center;font-size:1.2em;margin:12px 0;">$$\\beta = \\frac{\\Delta f}{f_m} = \\frac{k_f A_m}{f_m}$$</div>
+                <div style="font-size:0.98em;color:#555;margin-top:4px;">
+                    Trong đó: \(\\Delta f\) là độ lệch tần số cực đại, \(f_m\) là tần số tín hiệu điều chế, \(k_f\) là hằng số độ nhạy tần số.
+                </div>
+            </div>
+            <table style="width:100%;margin:16px 0 12px 0;background:#fff;border-radius:8px;box-shadow:0 1px 4px #e3e8f7;">
+                <tr>
+                    <td style="padding:8px 12px;"><b><i class="fas fa-info-circle" style="color:#1976d2"></i> Đặc điểm</b></td>
+                    <td style="padding:8px 12px;">
+                        Chống nhiễu tốt hơn AM, chất lượng âm thanh cao.<br>
+                        Nhược điểm: Băng thông rộng hơn AM, mạch thu phát phức tạp hơn.
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 12px;"><b><i class="fas fa-broadcast-tower" style="color:#43a047"></i> Ứng dụng</b></td>
+                    <td style="padding:8px 12px;">
+                        Phát thanh FM, truyền hình, liên lạc vô tuyến, truyền dữ liệu không dây.
+                    </td>
+                </tr>
+            </table>
+            <div style="margin:18px 0 10px 0;">
+                <b>Ví dụ thực tế:</b>
+                <ul style="margin:8px 0 0 0;">
+                    <li>Nếu tín hiệu âm thanh là sóng sin 1kHz, sóng mang là 10kHz, độ lệch tần số cực đại 5kHz, thì tín hiệu FM sẽ có dạng như hình dưới.</li>
+                    <li>FM thường dùng trong phát thanh chất lượng cao, truyền hình, liên lạc vô tuyến.</li>
+                </ul>
+            </div>
+            <div style="text-align:center;margin:18px 0 10px 0;">
+                <img src="/images/fm_example.gif" alt="FM Example" style="max-width:360px;border-radius:8px;box-shadow:0 1px 8px #e3e8f7;">
+                <div style="font-size:0.98em;color:#666;margin-top:4px;">Biểu diễn sóng FM: tần số sóng mang thay đổi theo tín hiệu thông tin</div>
+            </div>
+            <button onclick="closeModulationDetail()" style="margin-top:18px;background:#1976d2;color:#fff;padding:8px 24px;border:none;border-radius:6px;font-size:1.1em;box-shadow:0 1px 4px #e3e8f7;cursor:pointer;transition:background 0.2s;">Đóng</button>
+        </div>
         `;
     } else if (type === 'psk') {
         html = `
-            <h3>Điều chế PSK (Phase Shift Keying)</h3>
-            <p><b>Khái niệm:</b> Điều chế pha (PSK) là phương pháp điều chế trong đó pha của sóng mang được thay đổi theo dữ liệu số (bit 0/1).</p>
-            <p><b>Nguyên lý:</b><br>
-                Sóng PSK: <code>s(t) = A<sub>c</sub> \cdot \sin(2\pi f<sub>c</sub> t + \varphi<sub>k</sub>)</code><br>
-                <span style="font-size:0.98em;">với <b>\varphi<sub>k</sub></b> là pha ứng với từng giá trị bit.</span>
+        <div class="psk-theory-box" style="background:#f8fafd;border-radius:14px;padding:28px 24px 18px 24px;box-shadow:0 2px 12px #e3e8f7;max-width:750px;margin:auto;">
+            <h2 style="color:#1976d2;"><i class="fas fa-random"></i> Điều chế pha (PSK)</h2>
+            <p style="font-size:1.1em;"></p>
+                <b>Khái niệm:</b> <span style="color:#333">
+                <b>Điều chế pha</b> (PSK - <i>Phase Shift Keying</i>) là phương pháp điều chế trong đó <b>pha</b> của sóng mang được thay đổi theo dữ liệu số (bit 0/1) cần truyền.<br>
+                <a href="https://vi.wikipedia.org/wiki/Phase-shift_keying" target="_blank" style="font-size:0.95em;color:#1976d2;">(Tham khảo Wikipedia)</a>
+                </span>
             </p>
-            <ul>
-                <li><b>Các loại PSK phổ biến:</b>
-                    <ul>
-                        <li><b>BPSK (Binary PSK):</b> Bit 0: pha 0, Bit 1: pha π.</li>
-                        <li><b>QPSK (Quadrature PSK):</b> Mỗi ký hiệu biểu diễn 2 bit, sử dụng 4 pha khác nhau.</li>
-                    </ul>
-                </li>
-                <li><b>Đặc điểm:</b> Hiệu quả băng thông cao. Khả năng chống nhiễu tốt hơn ASK.</li>
-                <li><b>Ứng dụng:</b> Truyền thông số, WiFi, Bluetooth, vệ tinh.</li>
-            </ul>
-            <p><b>Ví dụ:</b> Với BPSK, bit 0 ứng với pha 0, bit 1 ứng với pha π. Sóng PSK sẽ có dạng như hình dưới.</p>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Binary_phase-shift_keying.png" alt="PSK Example" style="max-width:320px;display:block;margin:12px 0;">
-            <button onclick="closeModulationDetail()">Đóng</button>
+            <div style="margin:18px 0 12px 0;">
+                <b>Nguyên lý chung:</b>
+                <div style="margin:8px 0;text-align:center;">$$s(t) = A_c \\cos(2\\pi f_c t + \\varphi_k)$$</div>
+                <div style="font-size:0.98em;color:#555;margin-top:4px;">
+                    Trong đó: \(A_c\) là biên độ sóng mang, \(f_c\) là tần số sóng mang, \(\\varphi_k\) là pha ứng với từng giá trị bit hoặc cặp bit.
+                </div>
+            </div>
+            <div style="margin:22px 0 0 0;">
+                <h3 style="color:#1976d2;margin-bottom:8px;">BPSK (Binary Phase Shift Keying)</h3>
+                <div style="margin-bottom:8px;text-align:center;">
+                    <b>Công thức:</b>
+                    <div style="text-align:center;">$$s(t) = A_c \\cos(2\\pi f_c t + \\varphi_k)$$</div>
+                    <div style="text-align:center;">$$
+                        \\varphi_k = 
+                        \\begin{cases}
+                        0 & \\text{cho bit 1} \\\\
+                        \\pi & \\text{cho bit 0}
+                        \\end{cases}
+                    $$</div>
+                </div>
+                <div style="margin-bottom:8px;">
+                    <b>Lý thuyết:</b> BPSK là dạng đơn giản nhất của PSK, mỗi bit dữ liệu được mã hóa bằng 1 trong 2 pha: 0 hoặc \(\\pi\) (180°). Khi bit thay đổi, pha sóng mang "lật" 180°.
+                </div>
+                <div style="margin-bottom:8px;">
+                    <b>Ví dụ:</b> Dãy bit <code>1 0 1 1 0</code> sẽ tạo ra sóng mang có pha lần lượt là 0, \(\\pi\), 0, 0, \(\\pi\).
+                </div>
+                <div style="text-align:center;margin:10px 0 0 0;">
+                    <img src="/images/bpsk_example.png" alt="BPSK Example" style="max-width:320px;border-radius:6px;box-shadow:0 1px 6px #e3e8f7;">
+                    <div style="font-size:0.95em;color:#666;margin-top:4px;">Biểu diễn sóng BPSK</div>
+                </div>
+            </div>
+            <div style="margin:32px 0 0 0;">
+                <h3 style="color:#1976d2;margin-bottom:8px;">QPSK (Quadrature Phase Shift Keying)</h3>
+                <div style="margin-bottom:8px;text-align:center;">
+                    <b>Công thức:</b>
+                    <div style="text-align:center;">$$s(t) = A_c \\cos(2\\pi f_c t + \\varphi_k)$$</div>
+                    <div style="text-align:center;">$$
+                        \\varphi_k = 
+                        \\begin{cases}
+                        0 & \\text{cho 00} \\\\
+                        \\frac{\\pi}{2} & \\text{cho 01} \\\\
+                        \\pi & \\text{cho 11} \\\\
+                        \\frac{3\\pi}{2} & \\text{cho 10}
+                        \\end{cases}
+                    $$</div>
+                </div>
+                <div style="margin-bottom:8px;">
+                    <b>Lý thuyết:</b> QPSK mã hóa 2 bit trên mỗi ký hiệu, sử dụng 4 pha khác nhau. Nhờ đó tốc độ truyền dữ liệu gấp đôi BPSK trên cùng băng thông.
+                </div>
+                <div style="margin-bottom:8px;">
+                    <b>Ví dụ:</b> Cặp bit <code>00, 01, 11, 10</code> ứng với các pha: \(0\), \(\\frac{\\pi}{2}\), \(\\pi\), \(\\frac{3\\pi}{2}\).
+                </div>
+                <div style="text-align:center;margin:10px 0 0 0;">
+                    <img src="/images/qpsk_example.jpg" alt="QPSK Example" style="max-width:320px;border-radius:6px;box-shadow:0 1px 6px #e3e8f7;">
+                    <div style="font-size:0.95em;color:#666;margin-top:4px;">Biểu diễn sóng QPSK</div>
+                </div>
+            </div>
+            <table style="width:100%;margin:32px 0 12px 0;background:#fff;border-radius:8px;box-shadow:0 1px 4px #e3e8f7;">
+                <tr>
+                    <td style="padding:8px 12px;"><b><i class="fas fa-info-circle" style="color:#1976d2"></i> Đặc điểm</b></td>
+                    <td style="padding:8px 12px;">
+                        Hiệu quả băng thông cao, chống nhiễu tốt hơn ASK.<br>
+                        Có thể mở rộng lên nhiều mức pha (8-PSK, 16-PSK...) để tăng tốc độ truyền.
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 12px;"><b><i class="fas fa-broadcast-tower" style="color:#43a047"></i> Ứng dụng</b></td>
+                    <td style="padding:8px 12px;">
+                        Truyền thông số, WiFi, Bluetooth, truyền hình vệ tinh, RFID, truyền dữ liệu tốc độ cao.
+                    </td>
+                </tr>
+            </table>
+            <button onclick="closeModulationDetail()" style="margin-top:18px;background:#1976d2;color:#fff;padding:8px 24px;border:none;border-radius:6px;font-size:1.1em;box-shadow:0 1px 4px #e3e8f7;cursor:pointer;transition:background 0.2s;">Đóng</button>
+        </div>
         `;
     }
     detailDiv.innerHTML = html;
     detailDiv.style.display = 'block';
     detailDiv.scrollIntoView({behavior: "smooth"});
+    if (window.MathJax && window.MathJax.typeset) {
+        MathJax.typeset();
+    }
 }
 
 function closeModulationDetail() {
@@ -286,8 +426,8 @@ function showEncodingDetail(type) {
             <h3>Manchester</h3>
             <p><b>Khái niệm:</b> Manchester là phương pháp mã hóa tín hiệu số trong đó mỗi bit có một chuyển mức ở giữa:</p>
             <ul>
-                <li>Bit 0: chuyển từ cao xuống thấp (1 → 0)</li>
-                <li>Bit 1: chuyển từ thấp lên cao (0 → 1)</li>
+                <li>Bit 0: chuyển từ cao xuống thấp (1 \rightarrow 0)</li>
+                <li>Bit 1: chuyển từ thấp lên cao (0 \rightarrow 1)</li>
             </ul>
             <p><b>Ưu điểm:</b> Dễ đồng bộ, chống nhiễu tốt. <b>Nhược điểm:</b> Băng thông sử dụng gấp đôi tốc độ bit.</p>
             <button onclick="closeEncodingDetail()">Đóng</button>

@@ -1,5 +1,47 @@
--- mysql -u root -p dsp_learning < database/quizzes_questions.sql --
+-- mysql -u root -p < database/complete_schema.sql
+-- Create database
+CREATE DATABASE IF NOT EXISTS dsp_learning;
 USE dsp_learning;
+
+-- Create users table
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  full_name VARCHAR(255) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  role VARCHAR(50) DEFAULT 'user',
+  email_verified BOOLEAN DEFAULT FALSE,
+  reset_token VARCHAR(255),
+  reset_token_expires DATETIME,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create indexes for users table
+CREATE INDEX idx_username ON users(username);
+CREATE INDEX idx_email ON users(email);
+CREATE INDEX idx_reset_token ON users(reset_token);
+
+-- Create tabs table
+CREATE TABLE IF NOT EXISTS tabs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    content TEXT
+);
+
+-- Create comments table
+CREATE TABLE IF NOT EXISTS comments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    tab_id INT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (tab_id) REFERENCES tabs(id) ON DELETE CASCADE
+);
+
 -- Create quiz_questions table
 CREATE TABLE IF NOT EXISTS quizzes_questions (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -19,7 +61,19 @@ CREATE TABLE IF NOT EXISTS quizzes_results (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
--- Insert sample questions
+-- Insert default admin accounts
+INSERT INTO users (username, password, email, full_name, phone, role, email_verified)
+VALUES
+('root', '$2b$10$rfpcDc7p8J1oBngTqdu9V.06F9ejqw15/Hpn7r9F2wRHU.22nwkKS', 'root@example.com', 'Root Admin', '0123456789', 'admin', true),
+('admin', '$2b$10$rfpcDc7p8J1oBngTqdu9V.06F9ejqw15/Hpn7r9F2wRHU.22nwkKS', 'admin@example.com', 'System Admin', '0987654321', 'admin', true);
+
+-- Insert default tabs
+INSERT INTO tabs (name, content) VALUES
+('Study Materials', 'Nội dung tài liệu học tập...'),
+('Simulations', 'Nội dung mô phỏng...'),
+('Quizzes', 'Nội dung bài kiểm tra...');
+
+-- Insert sample quiz questions
 INSERT INTO quizzes_questions (question, options, correct_answer, explanation) VALUES
 (
     'Điều chế ASK là viết tắt của:',

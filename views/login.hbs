@@ -1,42 +1,94 @@
-<h2>Đăng nhập</h2>
-<form id="loginForm">
-    <input id="username" name="username" placeholder="Tên đăng nhập" required>
-    <input id="password" name="password" type="password" placeholder="Mật khẩu" required>
-    <button type="submit">Đăng nhập</button>
-    <p id="loginError" style="color:red"></p>
-</form>
-<p>Chưa có tài khoản? <a href="/register">Đăng ký</a></p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Đăng nhập</h2>
+                </div>
+                <div class="card-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Tên đăng nhập</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="/forgot-password">Quên mật khẩu?</a>
+                        </div>
+                        <div id="loginError" class="alert alert-danger mt-3" style="display: none;"></div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Chưa có tài khoản? <a href="/register">Đăng ký</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const res = await fetch('/api/v1/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    });
-    const data = await res.json();
-    if (data.success && data.data && data.data.token) {
-        localStorage.setItem('token', data.data.token); // Lưu token vào localStorage
-        // Đăng nhập server-side để tạo session/cookie
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/login';
-        form.style.display = 'none';
-        const userInput = document.createElement('input');
-        userInput.name = 'username';
-        userInput.value = username;
-        form.appendChild(userInput);
-        const passInput = document.createElement('input');
-        passInput.name = 'password';
-        passInput.value = password;
-        form.appendChild(passInput);
-        document.body.appendChild(form);
-        form.submit();
-    } else {
-        document.getElementById('loginError').innerText = data.message || 'Đăng nhập thất bại';
+    const rememberMe = document.getElementById('rememberMe').checked;
+    
+    try {
+        const res = await fetch('/api/v1/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password, rememberMe })
+        });
+        const data = await res.json();
+        
+        if (data.success && data.data && data.data.token) {
+            // Xóa token cũ trước khi lưu mới
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken');
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('refreshToken');
+            document.cookie = 'token=; Max-Age=0; path=/;';
+            // Lưu token vào localStorage nếu chọn "Ghi nhớ đăng nhập"
+            if (rememberMe) {
+                localStorage.setItem('token', data.data.token);
+                localStorage.setItem('refreshToken', data.data.refreshToken);
+            } else {
+                sessionStorage.setItem('token', data.data.token);
+                sessionStorage.setItem('refreshToken', data.data.refreshToken);
+            }
+            // Gửi token lên server để tạo cookie, sau đó chuyển hướng về home
+            fetch('/set-token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: data.data.token }),
+                credentials: 'same-origin'
+            })
+            .then(() => {
+                console.log('Đã gọi /set-token, chuyển hướng về /home');
+                window.location.href = '/home';
+            })
+            .catch(err => {
+                console.error('Lỗi khi gọi /set-token:', err);
+            });
+        } else {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.style.display = 'block';
+            errorDiv.innerText = data.message || 'Đăng nhập thất bại';
+        }
+    } catch (error) {
+        const errorDiv = document.getElementById('loginError');
+        errorDiv.style.display = 'block';
+        errorDiv.innerText = 'Có lỗi xảy ra, vui lòng thử lại sau';
     }
 });
 </script>

@@ -1,9 +1,88 @@
-<h2>Đăng ký</h2>
-<form method="POST" action="/register">
-    <input name="username" placeholder="Tên đăng nhập" required>
-    <input name="email" type="email" placeholder="Email" required>
-    <input name="password" type="password" placeholder="Mật khẩu" required>
-    <button type="submit">Đăng ký</button>
-    {{#if error}}<p style="color:red">{{error}}</p>{{/if}}
-</form>
-<p>Đã có tài khoản? <a href="/login">Đăng nhập</a></p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Đăng ký tài khoản</h2>
+                </div>
+                <div class="card-body">
+                    <form id="registerForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+" title="Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới">
+                        </div>
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Fullname</label>
+                            <input type="text" class="form-control" id="fullName" name="fullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="text" class="form-control" id="phone" name="phone" required pattern="[0-9]{9,12}" title="Số điện thoại hợp lệ (9-12 số)">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required minlength="6" placeholder="Atless 6 char">
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Re-type Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="6" placeholder="Atless 6 char">
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Đăng ký</button>
+                        </div>
+                        <div id="registerError" class="alert alert-danger mt-3" style="display:none;"></div>
+                        <div id="registerSuccess" class="alert alert-success mt-3" style="display:none;"></div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Đã có tài khoản? <a href="/login">Đăng nhập</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const username = document.getElementById('username').value;
+    const fullName = document.getElementById('fullName').value;
+    const phone = document.getElementById('phone').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const errorDiv = document.getElementById('registerError');
+    const successDiv = document.getElementById('registerSuccess');
+    errorDiv.style.display = 'none';
+    successDiv.style.display = 'none';
+    if (password !== confirmPassword) {
+        errorDiv.innerText = 'Mật khẩu xác nhận không khớp!';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    try {
+        const res = await fetch('/api/v1/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, username, fullName, phone, password })
+        });
+        const data = await res.json();
+        if (data.success) {
+            successDiv.innerText = 'Đăng ký thành công! Bạn có thể đăng nhập.';
+            successDiv.style.display = 'block';
+            errorDiv.style.display = 'none';
+            document.getElementById('registerForm').reset();
+        } else {
+            errorDiv.innerText = data.message || 'Đăng ký thất bại';
+            errorDiv.style.display = 'block';
+        }
+    } catch (err) {
+        errorDiv.innerText = 'Có lỗi xảy ra, vui lòng thử lại sau';
+        errorDiv.style.display = 'block';
+    }
+});
+</script>
