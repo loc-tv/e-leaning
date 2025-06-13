@@ -149,7 +149,7 @@ router.get('/quizzes', isAuthenticated, async (req, res) => {
     res.render('quizzes', { user: req.user, tabId: tab ? tab.id : null, questions });
 });
 
-// Settings (KHÔNG truyền tabId, KHÔNG render comments)
+// Settings 
 router.get('/settings', isAuthenticated, (req, res) => {
     res.render('settings', { user: req.user });
 });
